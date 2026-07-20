@@ -1,0 +1,35 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/dmarket-trading-openapi.yml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: ApiKey
+  type: apiKey
+  in: header
+  parameter: X-Api-Key
+  description: Public API key (lowercase hex). Generate it in your DMarket account settings.
+    See https://dmarket.com/faq#tradingAPI.
+  sources:
+  - openapi/dmarket-trading-openapi.yml
+- name: SignDate
+  type: apiKey
+  in: header
+  parameter: X-Sign-Date
+  description: Unix timestamp in seconds at signing time (e.g. 1605619994). Must be within 2
+    minutes of server time.
+  sources:
+  - openapi/dmarket-trading-openapi.yml
+- name: RequestSign
+  type: apiKey
+  in: header
+  parameter: X-Request-Sign
+  description: 'Ed25519 request signature prefixed with `dmar ed25519 `. Sign the concatenation
+    of HTTP method + path (including query string) + body + X-Sign-Date with your secret key,
+    then hex-encode the 64-byte Ed25519 signature. Reference clients (Go, Python, JS, PHP):
+    https://github.com/dmarket/dm-trading-tools.'
+  sources:
+  - openapi/dmarket-trading-openapi.yml
