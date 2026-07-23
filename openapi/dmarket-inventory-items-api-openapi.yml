@@ -1,0 +1,539 @@
+openapi: 3.0.4
+info:
+  title: DMarket trading Account Inventory/items API
+  description: 'Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.
+
+
+    Request signature instructions
+
+
+    A valid HTTP request to the trading API must include 3 request headers:
+
+
+    1) X-Api-Key: public key (must be a hex string in lowercase)
+
+    To get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)
+
+
+    2) X-Sign-Date: timestamp or current time
+
+    Example: 1605619994. Must not be older than 2 minutes from the request time.
+
+
+    3) X-Request-Sign: signature
+
+
+    The Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.
+
+
+    To make a signature, take the following steps:
+
+
+    1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)
+
+
+    2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> "sign" is Ed25519) using your secret key.
+
+    3) Hex-encode the 64-byte Ed25519 signature
+
+    4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)
+
+
+    You can check out examples on <https://github.com/dmarket/dm-trading-tools>.
+
+
+    DMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.'
+  version: v2.0.0
+  x-logo:
+    url: logo.svg
+    backgroundColor: '#FFFFFF'
+    altText: DMarket logo
+servers:
+- url: https://api.dmarket.com
+security:
+- ApiKey: []
+  SignDate: []
+  RequestSign: []
+tags:
+- name: Inventory/items
+  description: User inventory, deposits and withdrawals.
+paths:
+  /marketplace-api/v2/user/inventory:
+    get:
+      tags:
+      - Inventory/items
+      summary: List user inventory
+      description: 'Get user inventory details. Both 3rd party (e.g. Steam) and DMarket inventories are merged into one list. Prices are returned as integer cents. ''gameId'' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust.'
+      operationId: GetUserInventoryV2
+      x-badges:
+      - name: NEW
+        color: '#04BA39'
+      parameters:
+      - name: gameId
+        in: query
+        description: 'Game identifier. One of: a8db (CS2), 9a92 (Dota 2), tf2, rust.'
+        required: true
+        schema:
+          type: string
+          enum:
+          - a8db
+          - 9a92
+          - tf2
+          - rust
+      - name: title
+        in: query
+        description: Filter assets by title prefix (case-insensitive).
+        required: false
+        schema:
+          type: string
+      - name: treeFilters
+        in: query
+        description: 'Attribute filters in comma-separated key=value format. Values must match how the attribute is stored (typically the lowercase Steam string; see allowed values below).
+
+
+          Supported common keys: `tradable`, `inMarket`, `categoryPath`, `type`. Filter by game and title via the top-level `gameId` and `title` query parameters.
+
+
+          CS2 keys: `exterior`, `paintSeed`, `floatPart`, `phase`, `category`, `collection`, `charmName`, `charmExists`, `isProskin`, `fadePercentFrom`, `fadePercentTo`.
+
+
+          TF2 keys: `exterior`, `collection`, `isCraftable`. Dota 2 keys: `hero`.
+
+
+          Allowed CS2 values:
+
+          - `exterior`: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `not painted`
+
+          - `phase`: `phase-1`, `phase-2`, `phase-3`, `phase-4`, `ruby`, `sapphire`, `emerald`, `black-pearl`
+
+          - `floatPart`: `FN-0`..`FN-6`, `MW-0`..`MW-4`, `FT-0`..`FT-4`, `WW-0`..`WW-4`, `BS-0`..`BS-4` (bucketed float ranges per exterior)
+
+          - `category`: `stattrak_tm` (`_tm` is translated to the ™ symbol server-side), `souvenir`, `normal`, `★` (knives)
+
+
+          Allowed TF2 exterior values: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `battle scarred`.
+
+
+          Multi-value: suffix key with `[]`, e.g. `exterior[]=factory new,exterior[]=minimal wear` (URL-encode the space as `%20`).
+
+
+          Negation: prefix key with `not_`, e.g. `not_exterior=factory new`.
+
+
+          Ranges: `fadePercentFrom=10,fadePercentTo=90`.
+
+
+          Existence check: `charmExists=true` / `charmExists=false`.
+
+
+          Example: `categoryPath=rifle,exterior[]=factory new,exterior[]=minimal wear`.'
+        required: false
+        schema:
+          type: string
+      - name: orderBy
+        in: query
+        description: 'Sort field. Supported values: `price`, `title`, `float`, `createdAt`, `updatedAt`.'
+        required: false
+        schema:
+          type: string
+          enum:
+          - price
+          - title
+          - float
+          - createdAt
+          - updatedAt
+      - name: orderDir
+        in: query
+        description: Sort direction. Defaults to `asc` when `orderBy` is set.
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: limit
+        in: query
+        description: Number of items to return per page. Range 1..100.
+        required: true
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 100
+      - name: cursor
+        in: query
+        description: Pagination cursor returned from a previous response.
+        required: false
+        schema:
+          type: string
+          maxLength: 500
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/marketplacev2GetUserInventoryResponse'
+        default:
+          description: An unexpected error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -G 'https://api.dmarket.com/marketplace-api/v2/user/inventory' \\\n  --data-urlencode 'gameId=a8db' \\\n  --data-urlencode 'title=AK-47' \\\n  --data-urlencode 'treeFilters=categoryPath=rifle,exterior[]=factory new' \\\n  --data-urlencode 'orderBy=price' \\\n  --data-urlencode 'orderDir=asc' \\\n  --data-urlencode 'limit=10' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\""
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"gameId\": \"a8db\",\n    \"title\": \"AK-47\",\n    \"treeFilters\": \"categoryPath=rifle,exterior[]=factory new\",\n    \"orderBy\": \"price\",\n    \"orderDir\": \"asc\",\n    \"limit\": 10\n}\nresult, err = client.call(\"GET\", \"/marketplace-api/v2/user/inventory\", payload=payload)\nprint(result)"
+  /marketplace-api/v1/user-inventory/sync:
+    post:
+      tags:
+      - Inventory/items
+      summary: Sync inventory with Steam
+      description: Updating DMarket inventory details to sync them with data from Steam.
+      operationId: UserInventorySync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/marketplaceUserInventorySyncRequest'
+            example:
+              Type: Inventory
+              GameID: CSGO
+        required: true
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/marketplaceUserInventorySyncResponse'
+        default:
+          description: An unexpected error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -X POST 'https://api.dmarket.com/marketplace-api/v1/user-inventory/sync' \\\n  -H 'Content-Type: application/json' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\" \\\n  -d '{\n  \"Type\": \"Inventory\",\n  \"GameID\": \"CSGO\"\n}'"
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"Type\": \"Inventory\",\n    \"GameID\": \"CSGO\"\n}\nresult, err = client.call(\"POST\", \"/marketplace-api/v1/user-inventory/sync\", payload=payload)\nprint(result)"
+  /exchange/v1/withdraw-assets:
+    post:
+      tags:
+      - Inventory/items
+      summary: Withdraw assets
+      description: 'Withdraw assets. ''gameId'' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust'
+      operationId: withdrawAssetsHandler
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/entity.WithdrawAssetsRequest'
+            example:
+              assets:
+              - id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                gameId: a8db
+                classId: c7e8f9a0-1234-5678-9abc-def012345678
+              requestId: withdraw-001
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/entity.WithdrawResponse'
+        '400':
+          description: Bad body request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rest.ErrorRepresentation'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rest.ErrorRepresentation'
+        default:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/entity.WithdrawResponse'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -X POST 'https://api.dmarket.com/exchange/v1/withdraw-assets' \\\n  -H 'Content-Type: application/json' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\" \\\n  -d '{\n  \"assets\": [\n    {\n      \"id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n      \"gameId\": \"a8db\",\n      \"classId\": \"c7e8f9a0-1234-5678-9abc-def012345678\"\n    }\n  ],\n  \"requestId\": \"withdraw-001\"\n}'"
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"assets\": [\n        {\n            \"id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n            \"gameId\": \"a8db\",\n            \"classId\": \"c7e8f9a0-1234-5678-9abc-def012345678\"\n        }\n    ],\n    \"requestId\": \"withdraw-001\"\n}\nresult, err = client.call(\"POST\", \"/exchange/v1/withdraw-assets\", payload=payload)\nprint(result)"
+  /exchange/v1/customized-fees:
+    get:
+      tags:
+      - Inventory/items
+      summary: List low-fee items
+      description: 'Get the list of items with lower fees. The new list of items every day. ''gameId'' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust. ''offerType'' param values are: ''dmarket'', ''p2p''.'
+      operationId: getCustomizedItems
+      parameters:
+      - name: gameId
+        in: query
+        description: 'enums: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust'
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: offerType
+        in: query
+        description: 'enums: "dmarket", "p2p"'
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: dmarket
+      - name: limit
+        in: query
+        description: limit
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          default: 10
+      - name: offset
+        in: query
+        description: offset
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/entity.ListFeeResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rest.ErrorRepresentation'
+        default:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/entity.ListFeeResponse'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -G 'https://api.dmarket.com/exchange/v1/customized-fees' \\\n  --data-urlencode 'gameId=a8db' \\\n  --data-urlencode 'offerType=dmarket' \\\n  --data-urlencode 'limit=20' \\\n  --data-urlencode 'offset=0' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\""
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"gameId\": \"a8db\",\n    \"offerType\": \"dmarket\",\n    \"limit\": 20,\n    \"offset\": 0\n}\nresult, err = client.call(\"GET\", \"/exchange/v1/customized-fees\", payload=payload)\nprint(result)"
+components:
+  schemas:
+    marketplacev2GetUserInventoryResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          description: User inventory assets.
+          items:
+            $ref: '#/components/schemas/marketplacev2Asset'
+        total:
+          type: integer
+          format: int64
+          description: Total number of items matching the filter criteria across all pages, independent of limit/cursor.
+        cursor:
+          type: string
+          description: Cursor for the next page. Empty when there are no more pages.
+    marketplaceGames:
+      type: string
+      default: UnknownGame
+      enum:
+      - UnknownGame
+      - CSGO
+      - Dota2
+      - TF2
+      - LifeBeyond
+      - Rust
+    marketplacev2Asset:
+      type: object
+      description: User inventory asset with typed attributes.
+      properties:
+        attributes:
+          description: Game-specific asset attributes. See `asset.Attributes` in the marketplace-api proto schema for the full oneof definition.
+          type: object
+          additionalProperties: true
+        suggestedPrice:
+          $ref: '#/components/schemas/typeCommonMoney'
+        offerRecommendedPrice:
+          $ref: '#/components/schemas/typeCommonMoney'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        inMarket:
+          type: boolean
+          description: True if the asset is held on DMarket; false if still in the user's Steam inventory.
+    marketplaceInventorySyncType:
+      type: string
+      default: UnknownSyncType
+      enum:
+      - UnknownSyncType
+      - Inventory
+    entity.ListFeeResponse:
+      required:
+      - defaultFee
+      - reducedFees
+      properties:
+        defaultFee:
+          $ref: '#/components/schemas/entity.ListDefaultFee'
+        reducedFees:
+          type: array
+          items:
+            $ref: '#/components/schemas/entity.ListPersonalFee'
+    entity.ListDefaultFee:
+      required:
+      - minAmount
+      - fraction
+      properties:
+        fraction:
+          type: string
+        minAmount:
+          type: integer
+          format: int64
+    entity.WithdrawAssetsRequest:
+      required:
+      - assets
+      - requestId
+      properties:
+        assets:
+          type: array
+          items:
+            $ref: '#/components/schemas/entity.Asset'
+        requestId:
+          type: string
+    entity.Asset:
+      required:
+      - classId
+      - gameId
+      - id
+      properties:
+        classId:
+          type: string
+        gameId:
+          type: string
+        id:
+          type: string
+    rest.ErrorRepresentation:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    marketplaceUserInventorySyncRequest:
+      type: object
+      properties:
+        Type:
+          $ref: '#/components/schemas/marketplaceInventorySyncType'
+        GameID:
+          $ref: '#/components/schemas/marketplaceGames'
+    typeCommonMoney:
+      type: object
+      description: Monetary amount. `amount` is a decimal string (e.g. `"1.50"`).
+      properties:
+        currency:
+          type: string
+          description: ISO 4217 currency code (e.g. `USD`).
+        amount:
+          type: string
+          description: Decimal amount as a string.
+    entity.ListPersonalFee:
+      required:
+      - title
+      - fraction
+      - minPrice
+      - maxPrice
+      - expiresAt
+      properties:
+        expiresAt:
+          type: integer
+          format: int64
+        fraction:
+          type: string
+        maxPrice:
+          type: integer
+          format: int64
+        minPrice:
+          type: integer
+          format: int64
+        title:
+          type: string
+    marketplaceUserInventorySyncResponse:
+      type: object
+    entity.WithdrawResponse:
+      required:
+      - transferId
+      properties:
+        transferId:
+          type: string
+    runtimeError:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Public API key (lowercase hex). Generate it in your DMarket account settings. See https://dmarket.com/faq#tradingAPI.
+    SignDate:
+      type: apiKey
+      in: header
+      name: X-Sign-Date
+      description: Unix timestamp in seconds at signing time (e.g. 1605619994). Must be within 2 minutes of server time.
+    RequestSign:
+      type: apiKey
+      in: header
+      name: X-Request-Sign
+      description: 'Ed25519 request signature prefixed with `dmar ed25519 `. Sign the concatenation of HTTP method + path (including query string) + body + X-Sign-Date with your secret key, then hex-encode the 64-byte Ed25519 signature. Reference clients (Go, Python, JS, PHP): https://github.com/dmarket/dm-trading-tools.'
+x-tagGroups:
+- name: Account
+  tags:
+  - Account
+- name: Trading
+  tags:
+  - Buy items
+  - Sell Items
+  - Sold user items
+- name: Inventory
+  tags:
+  - Inventory/items
+- name: Market data
+  tags:
+  - Aggregator

@@ -1,0 +1,195 @@
+openapi: 3.0.4
+info:
+  title: DMarket trading Account Aggregator API
+  description: 'Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.
+
+
+    Request signature instructions
+
+
+    A valid HTTP request to the trading API must include 3 request headers:
+
+
+    1) X-Api-Key: public key (must be a hex string in lowercase)
+
+    To get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)
+
+
+    2) X-Sign-Date: timestamp or current time
+
+    Example: 1605619994. Must not be older than 2 minutes from the request time.
+
+
+    3) X-Request-Sign: signature
+
+
+    The Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.
+
+
+    To make a signature, take the following steps:
+
+
+    1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)
+
+
+    2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> "sign" is Ed25519) using your secret key.
+
+    3) Hex-encode the 64-byte Ed25519 signature
+
+    4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)
+
+
+    You can check out examples on <https://github.com/dmarket/dm-trading-tools>.
+
+
+    DMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.'
+  version: v2.0.0
+  x-logo:
+    url: logo.svg
+    backgroundColor: '#FFFFFF'
+    altText: DMarket logo
+servers:
+- url: https://api.dmarket.com
+security:
+- ApiKey: []
+  SignDate: []
+  RequestSign: []
+tags:
+- name: Aggregator
+  description: Aggregated market price data.
+paths:
+  /trade-aggregator/v1/last-sales:
+    get:
+      summary: Get item sales history
+      description: Get the item sales history. Up to 12 last months.
+      operationId: Aggregator_GetLastSales
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tradeGetLastSalesResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rest.ErrorRepresentation'
+      parameters:
+      - name: gameId
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: title
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: filters
+        description: 'filters is a list of filters. For example: exterior[]=factory new,phase[]=phase-1,phase[]=phase-2,float[]=2,float[]=133.'
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: txOperationType
+        description: 'tx_operation_type is a type of transaction to return. Values: "", "Target", "Offer".'
+        in: query
+        required: false
+        schema:
+          items:
+            type: array
+      - name: limit
+        description: 'limit is a maximum number of sales to return.
+
+          min: 1
+
+          max: 20'
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+      tags:
+      - Aggregator
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -G 'https://api.dmarket.com/trade-aggregator/v1/last-sales' \\\n  --data-urlencode 'gameId=a8db' \\\n  --data-urlencode 'title=AK-47 | Redline (Field-Tested)' \\\n  --data-urlencode 'limit=20' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\""
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"gameId\": \"a8db\",\n    \"title\": \"AK-47 | Redline (Field-Tested)\",\n    \"limit\": 20\n}\nresult, err = client.call(\"GET\", \"/trade-aggregator/v1/last-sales\", payload=payload)\nprint(result)"
+components:
+  schemas:
+    rest.ErrorRepresentation:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    GetLastSalesResponseSale:
+      type: object
+      properties:
+        price:
+          type: string
+        date:
+          description: unix timestamp
+          type: string
+          format: int64
+        txOperationType:
+          enum:
+          - Offer
+          - Order
+          type: string
+        offerAttributes:
+          type: object
+        orderAttributes:
+          type: object
+    tradeGetLastSalesResponse:
+      type: object
+      properties:
+        sales:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetLastSalesResponseSale'
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Public API key (lowercase hex). Generate it in your DMarket account settings. See https://dmarket.com/faq#tradingAPI.
+    SignDate:
+      type: apiKey
+      in: header
+      name: X-Sign-Date
+      description: Unix timestamp in seconds at signing time (e.g. 1605619994). Must be within 2 minutes of server time.
+    RequestSign:
+      type: apiKey
+      in: header
+      name: X-Request-Sign
+      description: 'Ed25519 request signature prefixed with `dmar ed25519 `. Sign the concatenation of HTTP method + path (including query string) + body + X-Sign-Date with your secret key, then hex-encode the 64-byte Ed25519 signature. Reference clients (Go, Python, JS, PHP): https://github.com/dmarket/dm-trading-tools.'
+x-tagGroups:
+- name: Account
+  tags:
+  - Account
+- name: Trading
+  tags:
+  - Buy items
+  - Sell Items
+  - Sold user items
+- name: Inventory
+  tags:
+  - Inventory/items
+- name: Market data
+  tags:
+  - Aggregator

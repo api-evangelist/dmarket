@@ -1,0 +1,414 @@
+openapi: 3.0.4
+info:
+  title: DMarket trading Account API
+  description: 'Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.
+
+
+    Request signature instructions
+
+
+    A valid HTTP request to the trading API must include 3 request headers:
+
+
+    1) X-Api-Key: public key (must be a hex string in lowercase)
+
+    To get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)
+
+
+    2) X-Sign-Date: timestamp or current time
+
+    Example: 1605619994. Must not be older than 2 minutes from the request time.
+
+
+    3) X-Request-Sign: signature
+
+
+    The Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.
+
+
+    To make a signature, take the following steps:
+
+
+    1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)
+
+
+    2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> "sign" is Ed25519) using your secret key.
+
+    3) Hex-encode the 64-byte Ed25519 signature
+
+    4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)
+
+
+    You can check out examples on <https://github.com/dmarket/dm-trading-tools>.
+
+
+    DMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.'
+  version: v2.0.0
+  x-logo:
+    url: logo.svg
+    backgroundColor: '#FFFFFF'
+    altText: DMarket logo
+servers:
+- url: https://api.dmarket.com
+security:
+- ApiKey: []
+  SignDate: []
+  RequestSign: []
+tags:
+- name: Account
+  description: User profile and balance.
+paths:
+  /account/v1/user:
+    get:
+      tags:
+      - Account
+      summary: Get user profile
+      description: Getting general user profile information.
+      operationId: getUserByTokenHandler
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/representation.UserAccountResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/representation.UserAccountResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.ErrorRepresentation'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.ErrorRepresentation'
+        default:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/representation.UserAccountResponse'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl 'https://api.dmarket.com/account/v1/user' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\""
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: '# Full signing client: https://github.com/dmarket/dm-trading-tools
+
+          from dmarket_client import DMarketClient
+
+
+          client = DMarketClient(public_key="<public hex>", secret_key="<secret hex>")
+
+          result, err = client.call("GET", "/account/v1/user")
+
+          print(result)'
+  /account/v1/balance:
+    get:
+      tags:
+      - Account
+      summary: Get account balance
+      description: Getting the current USD & DMC balance that is available for trading items / buying subscriptions. The response format is in coins (cents for USD, dimoshi for DMC).
+      operationId: getUserBalance
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/representation.UserBalance'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.ErrorRepresentation'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.ErrorRepresentation'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.ErrorRepresentation'
+        default:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/representation.UserBalance'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl 'https://api.dmarket.com/account/v1/balance' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\""
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: '# Full signing client: https://github.com/dmarket/dm-trading-tools
+
+          from dmarket_client import DMarketClient
+
+
+          client = DMarketClient(public_key="<public hex>", secret_key="<secret hex>")
+
+          result, err = client.call("GET", "/account/v1/balance")
+
+          print(result)'
+components:
+  schemas:
+    representation.Feat:
+      required:
+      - enabled
+      - name
+      properties:
+        enabled:
+          type: boolean
+        name:
+          type: string
+          enum:
+          - P2P
+          - P2PToggleVisible
+          - P2POnboardingSeen
+    api.ErrorRepresentation.validationDetails: {}
+    representation.AgreementsInfo:
+      required:
+      - isConfirmed
+      - updated
+      properties:
+        isConfirmed:
+          type: boolean
+        updated:
+          type: integer
+          format: int64
+    representation.Restriction:
+      required:
+      - expirationTime
+      - name
+      properties:
+        expirationTime:
+          type: integer
+          format: int64
+        name:
+          type: string
+          enum:
+          - P2POfferCreation
+    representation.UserAccountSettingsResponse:
+      required:
+      - enabledDeviceConfirmation
+      - isSubscribedToNewsletters
+      - targetsLimit
+      - tradingApiToken
+      properties:
+        enabledDeviceConfirmation:
+          type: boolean
+        isSubscribedToNewsletters:
+          type: boolean
+        targetsLimit:
+          type: integer
+          format: int32
+        tradingApiToken:
+          type: string
+    representation.SteamAccount:
+      required:
+      - apiKey
+      - apiKeyStatus
+      - icon
+      - isProfilePrivate
+      - level
+      - steamId
+      - tradeUrl
+      - username
+      properties:
+        apiKey:
+          type: string
+        apiKeyStatus:
+          type: string
+          enum:
+          - New
+          - Verified
+          - Invalid
+        icon:
+          type: string
+        isProfilePrivate:
+          type: boolean
+        level:
+          type: integer
+          format: int64
+        steamId:
+          type: string
+        tradeUrl:
+          type: string
+        username:
+          type: string
+    representation.UserBalance:
+      required:
+      - dmc
+      - dmcAvailableToWithdraw
+      - usd
+      - usdAvailableToWithdraw
+      properties:
+        dmc:
+          type: string
+        dmcAvailableToWithdraw:
+          type: string
+        usd:
+          type: string
+        usdAvailableToWithdraw:
+          type: string
+    representation.UserAccountResponse:
+      required:
+      - agreementsInfo
+      - countryCode
+      - countryCodeFromIP
+      - email
+      - features
+      - ga_client_id
+      - hasActiveSubscriptions
+      - hasHistoryEvents
+      - id
+      - imageUrl
+      - isEmailVerified
+      - isPasswordSet
+      - level
+      - linkedGames
+      - migrated
+      - publicKey
+      - regType
+      - restrictions
+      - settings
+      - steamAccount
+      - twitchAccount
+      - username
+      properties:
+        agreementsInfo:
+          $ref: '#/components/schemas/representation.AgreementsInfo'
+        countryCode:
+          type: string
+        countryCodeFromIP:
+          type: string
+        email:
+          type: string
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/representation.Feat'
+        ga_client_id:
+          type: string
+        hasActiveSubscriptions:
+          type: boolean
+        hasHistoryEvents:
+          type: boolean
+        id:
+          type: string
+        imageUrl:
+          type: string
+        isEmailVerified:
+          type: boolean
+        isPasswordSet:
+          type: boolean
+        level:
+          type: integer
+          format: int64
+        linkedGames:
+          type: array
+          items:
+            $ref: '#/components/schemas/representation.LinkedGame'
+        migrated:
+          type: boolean
+        publicKey:
+          type: string
+        regType:
+          type: string
+          enum:
+          - steam
+          - user
+        restrictions:
+          type: array
+          items:
+            $ref: '#/components/schemas/representation.Restriction'
+        settings:
+          $ref: '#/components/schemas/representation.UserAccountSettingsResponse'
+        steamAccount:
+          $ref: '#/components/schemas/representation.SteamAccount'
+        twitchAccount:
+          $ref: '#/components/schemas/representation.TwitchAccount'
+        username:
+          type: string
+    api.ErrorRepresentation:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        validationDetails:
+          $ref: '#/components/schemas/api.ErrorRepresentation.validationDetails'
+    representation.TwitchAccount:
+      required:
+      - icon
+      - userId
+      - username
+      properties:
+        icon:
+          type: string
+        userId:
+          type: string
+        username:
+          type: string
+    representation.LinkedGame:
+      required:
+      - gameId
+      - gameUserId
+      - username
+      properties:
+        gameId:
+          type: string
+        gameUserId:
+          type: string
+        username:
+          type: string
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Public API key (lowercase hex). Generate it in your DMarket account settings. See https://dmarket.com/faq#tradingAPI.
+    SignDate:
+      type: apiKey
+      in: header
+      name: X-Sign-Date
+      description: Unix timestamp in seconds at signing time (e.g. 1605619994). Must be within 2 minutes of server time.
+    RequestSign:
+      type: apiKey
+      in: header
+      name: X-Request-Sign
+      description: 'Ed25519 request signature prefixed with `dmar ed25519 `. Sign the concatenation of HTTP method + path (including query string) + body + X-Sign-Date with your secret key, then hex-encode the 64-byte Ed25519 signature. Reference clients (Go, Python, JS, PHP): https://github.com/dmarket/dm-trading-tools.'
+x-tagGroups:
+- name: Account
+  tags:
+  - Account
+- name: Trading
+  tags:
+  - Buy items
+  - Sell Items
+  - Sold user items
+- name: Inventory
+  tags:
+  - Inventory/items
+- name: Market data
+  tags:
+  - Aggregator

@@ -1,0 +1,277 @@
+openapi: 3.0.4
+info:
+  title: DMarket trading Account Sold user items API
+  description: 'Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.
+
+
+    Request signature instructions
+
+
+    A valid HTTP request to the trading API must include 3 request headers:
+
+
+    1) X-Api-Key: public key (must be a hex string in lowercase)
+
+    To get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)
+
+
+    2) X-Sign-Date: timestamp or current time
+
+    Example: 1605619994. Must not be older than 2 minutes from the request time.
+
+
+    3) X-Request-Sign: signature
+
+
+    The Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.
+
+
+    To make a signature, take the following steps:
+
+
+    1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)
+
+
+    2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> "sign" is Ed25519) using your secret key.
+
+    3) Hex-encode the 64-byte Ed25519 signature
+
+    4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)
+
+
+    You can check out examples on <https://github.com/dmarket/dm-trading-tools>.
+
+
+    DMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.'
+  version: v2.0.0
+  x-logo:
+    url: logo.svg
+    backgroundColor: '#FFFFFF'
+    altText: DMarket logo
+servers:
+- url: https://api.dmarket.com
+security:
+- ApiKey: []
+  SignDate: []
+  RequestSign: []
+tags:
+- name: Sold user items
+  description: History of your completed sales.
+paths:
+  /marketplace-api/v1/user-offers/closed:
+    get:
+      tags:
+      - Sold user items
+      summary: List user closed offers
+      description: Get the list of the user’s closed sell offers. The price amount format is in USD, i.e. 0.5 is 50 cents.
+      operationId: GetUserClosedOffers
+      parameters:
+      - name: Limit
+        description: Limits number of returned closed offers in response.
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uint64
+      - name: OrderDir
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - desc
+          - asc
+          default: desc
+      - name: OfferCreated.From
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+          example: '1730419200'
+      - name: OfferCreated.To
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+          example: '1730419200'
+      - name: OfferClosed.From
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+          example: '1730419200'
+      - name: OfferClosed.To
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+          example: '1730419200'
+      - name: Cursor
+        description: Cursor is next page identifier.
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: Finalization.From
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+          example: '1730419200'
+      - name: Finalization.To
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+          example: '1730419200'
+      - name: Status
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - successful
+            - reverted
+            - trade_protected
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/marketplaceGetUserClosedOffersResponse'
+        default:
+          description: An unexpected error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -G 'https://api.dmarket.com/marketplace-api/v1/user-offers/closed' \\\n  --data-urlencode 'Limit=10' \\\n  --data-urlencode 'OrderDir=desc' \\\n  --data-urlencode 'Status=successful' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\""
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"Limit\": 10,\n    \"OrderDir\": \"desc\",\n    \"Status\": \"successful\"\n}\nresult, err = client.call(\"GET\", \"/marketplace-api/v1/user-offers/closed\", payload=payload)\nprint(result)"
+components:
+  schemas:
+    TradeFeeData:
+      type: object
+      properties:
+        Amount:
+          $ref: '#/components/schemas/marketplaceMoney'
+        Percent:
+          type: string
+        IsPersonal:
+          type: boolean
+          format: boolean
+    marketplaceTradeStatus:
+      type: string
+      enum:
+      - successful
+      - reverted
+      - trade_protected
+      default: successful
+    marketplaceGetUserClosedOffersResponseTrade:
+      type: object
+      properties:
+        OfferID:
+          type: string
+        TargetID:
+          type: string
+        AssetID:
+          type: string
+        Price:
+          $ref: '#/components/schemas/marketplaceMoney'
+        CurrencyCode:
+          type: string
+        Amount:
+          type: string
+          format: uint64
+        Title:
+          type: string
+        Fee:
+          $ref: '#/components/schemas/TradeFeeData'
+        OfferCreatedAt:
+          type: string
+          format: int64
+        OfferClosedAt:
+          type: string
+          format: int64
+        Status:
+          $ref: '#/components/schemas/marketplaceTradeStatus'
+        FinalizationTime:
+          type: string
+          format: int64
+    marketplaceMoney:
+      type: object
+      properties:
+        Currency:
+          type: string
+          description: Currency code.
+        Amount:
+          type: number
+          format: float
+          description: Money amount.
+    runtimeError:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    marketplaceGetUserClosedOffersResponse:
+      type: object
+      properties:
+        Trades:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplaceGetUserClosedOffersResponseTrade'
+        Total:
+          type: string
+          format: uint64
+        Cursor:
+          type: string
+          description: Cursor is a next page identifier.
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Public API key (lowercase hex). Generate it in your DMarket account settings. See https://dmarket.com/faq#tradingAPI.
+    SignDate:
+      type: apiKey
+      in: header
+      name: X-Sign-Date
+      description: Unix timestamp in seconds at signing time (e.g. 1605619994). Must be within 2 minutes of server time.
+    RequestSign:
+      type: apiKey
+      in: header
+      name: X-Request-Sign
+      description: 'Ed25519 request signature prefixed with `dmar ed25519 `. Sign the concatenation of HTTP method + path (including query string) + body + X-Sign-Date with your secret key, then hex-encode the 64-byte Ed25519 signature. Reference clients (Go, Python, JS, PHP): https://github.com/dmarket/dm-trading-tools.'
+x-tagGroups:
+- name: Account
+  tags:
+  - Account
+- name: Trading
+  tags:
+  - Buy items
+  - Sell Items
+  - Sold user items
+- name: Inventory
+  tags:
+  - Inventory/items
+- name: Market data
+  tags:
+  - Aggregator

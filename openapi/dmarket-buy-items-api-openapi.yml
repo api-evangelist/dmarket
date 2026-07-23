@@ -1,0 +1,1302 @@
+openapi: 3.0.4
+info:
+  title: DMarket trading Account Buy items API
+  description: 'Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.
+
+
+    Request signature instructions
+
+
+    A valid HTTP request to the trading API must include 3 request headers:
+
+
+    1) X-Api-Key: public key (must be a hex string in lowercase)
+
+    To get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)
+
+
+    2) X-Sign-Date: timestamp or current time
+
+    Example: 1605619994. Must not be older than 2 minutes from the request time.
+
+
+    3) X-Request-Sign: signature
+
+
+    The Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.
+
+
+    To make a signature, take the following steps:
+
+
+    1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)
+
+
+    2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> "sign" is Ed25519) using your secret key.
+
+    3) Hex-encode the 64-byte Ed25519 signature
+
+    4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)
+
+
+    You can check out examples on <https://github.com/dmarket/dm-trading-tools>.
+
+
+    DMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.'
+  version: v2.0.0
+  x-logo:
+    url: logo.svg
+    backgroundColor: '#FFFFFF'
+    altText: DMarket logo
+servers:
+- url: https://api.dmarket.com
+security:
+- ApiKey: []
+  SignDate: []
+  RequestSign: []
+tags:
+- name: Buy items
+  description: Browse marketplace offers and buy orders (targets), and purchase items.
+paths:
+  /marketplace-api/v1/targets-by-title/{game_id}/{title}:
+    get:
+      tags:
+      - Buy items
+      summary: Find buy orders (targets) by item title
+      description: 'Returns aggregated buy orders (targets) for a specific game and item title. Use this endpoint to see current demand: how many buy orders exist and at what prices.
+
+
+        Path parameters:
+
+        - game_id: Game identifier (e.g., csgo, dota2, rust).
+
+        - title: Exact in-game item title.
+
+
+        Response contains a list of orders with fields: amount (number of items requested), price (best price for that title and attributes), title, and attributes (quality/rarity/skin parameters, depending on the game).'
+      operationId: MarketAPI_GetTargetsByTitle
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/marketplaceGetTargetsByTitleResponse'
+        default:
+          description: An unexpected error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+      parameters:
+      - name: game_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: title
+        in: path
+        required: true
+        schema:
+          type: string
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl 'https://api.dmarket.com/marketplace-api/v1/targets-by-title/a8db/AK-47%20%7C%20Redline%20%28Field-Tested%29' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\""
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: '# Full signing client: https://github.com/dmarket/dm-trading-tools
+
+          from dmarket_client import DMarketClient
+
+
+          client = DMarketClient(public_key="<public hex>", secret_key="<secret hex>")
+
+          result, err = client.call("GET", "/marketplace-api/v1/targets-by-title/a8db/AK-47%20%7C%20Redline%20%28Field-Tested%29")
+
+          print(result)'
+  /marketplace-api/v1/aggregated-prices:
+    post:
+      summary: Get aggregated market prices for item titles
+      description: 'Returns aggregated pricing for specified item titles, including best buy (order) and best sell (offer) prices and the total number of orders/offers per title. Use this to quickly assess market depth and price levels.
+
+
+        Request body:
+
+        - filter.game: Game identifier.
+
+        - filter.titles[]: List of exact item titles to aggregate.
+
+        - limit, cursor: Pagination controls.
+
+
+        Response:
+
+        - aggregatedPrices[]: For each title: orderBestPrice, orderCount, offerBestPrice, offerCount.
+
+        - nextCursor: Use to fetch the next page.'
+      operationId: MarketAPI_ListAggregatedPrices
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/marketplaceListAggregatedPricesResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/marketplaceListAggregatedPricesRequest'
+            example:
+              filter:
+                game: a8db
+                titles:
+                - AK-47 | Redline (Field-Tested)
+              limit: '100'
+        required: true
+      tags:
+      - Buy items
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -X POST 'https://api.dmarket.com/marketplace-api/v1/aggregated-prices' \\\n  -H 'Content-Type: application/json' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\" \\\n  -d '{\n  \"filter\": {\n    \"game\": \"a8db\",\n    \"titles\": [\n      \"AK-47 | Redline (Field-Tested)\"\n    ]\n  },\n  \"limit\": \"100\"\n}'"
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"filter\": {\n        \"game\": \"a8db\",\n        \"titles\": [\n            \"AK-47 | Redline (Field-Tested)\"\n        ]\n    },\n    \"limit\": \"100\"\n}\nresult, err = client.call(\"POST\", \"/marketplace-api/v1/aggregated-prices\", payload=payload)\nprint(result)"
+  /marketplace-api/v2/user/targets:
+    get:
+      tags:
+      - Buy items
+      summary: List user targets
+      description: 'Get the list of the current user''s targets. Prices are returned as integer cents. ''gameId'' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust.'
+      operationId: GetUserTargetsV2
+      x-badges:
+      - name: NEW
+        color: '#04BA39'
+      parameters:
+      - name: gameId
+        in: query
+        description: 'Game identifier. One of: a8db (CS2), 9a92 (Dota 2), tf2, rust.'
+        required: true
+        schema:
+          type: string
+          enum:
+          - a8db
+          - 9a92
+          - tf2
+          - rust
+      - name: title
+        in: query
+        description: Filter targets by title prefix (case-insensitive).
+        required: false
+        schema:
+          type: string
+      - name: treeFilters
+        in: query
+        description: 'Attribute filters in comma-separated key=value format. Values must match how the attribute is stored (typically the lowercase Steam string; see allowed values below).
+
+
+          Supported common keys: `categoryPath`, `amount`, `status`. Filter by game, title, and price via the top-level `gameId`, `title`, and `priceFrom`/`priceTo` query parameters.
+
+
+          CS2 keys: `category`, `exterior`, `floatPart`, `isAdvanced`, `paintSeed`, `phase`.
+
+
+          Allowed CS2 values:
+
+          - `exterior`: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `not painted`
+
+          - `phase`: `phase-1`, `phase-2`, `phase-3`, `phase-4`, `ruby`, `sapphire`, `emerald`, `black-pearl`
+
+          - `floatPart`: `FN-0`..`FN-6`, `MW-0`..`MW-4`, `FT-0`..`FT-4`, `WW-0`..`WW-4`, `BS-0`..`BS-4` (bucketed float ranges per exterior)
+
+          - `category`: `stattrak_tm` (`_tm` is translated to the ™ symbol server-side), `souvenir`, `normal`, `★` (knives)
+
+
+          Multi-value: suffix key with `[]`, e.g. `exterior[]=factory new,exterior[]=minimal wear` (URL-encode the space as `%20`).
+
+
+          Negation: prefix key with `not_`, e.g. `not_exterior=factory new`.
+
+
+          Example: `categoryPath=rifle,exterior[]=factory new`.'
+        required: false
+        schema:
+          type: string
+      - name: priceFrom
+        in: query
+        description: Lower bound of the target price range in cents (inclusive).
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: priceTo
+        in: query
+        description: Upper bound of the target price range in cents (inclusive).
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: orderBy
+        in: query
+        description: 'Sort field. Supported values: `price`, `title`, `createdAt`.'
+        required: false
+        schema:
+          type: string
+          enum:
+          - price
+          - title
+          - createdAt
+      - name: orderDir
+        in: query
+        description: Sort direction. Defaults to `asc` when `orderBy` is set.
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: limit
+        in: query
+        description: Number of items to return per page. Range 1..100.
+        required: true
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 100
+      - name: cursor
+        in: query
+        description: Pagination cursor returned from a previous response.
+        required: false
+        schema:
+          type: string
+          maxLength: 500
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/marketplacev2GetUserTargetsResponse'
+        default:
+          description: An unexpected error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -G 'https://api.dmarket.com/marketplace-api/v2/user/targets' \\\n  --data-urlencode 'gameId=a8db' \\\n  --data-urlencode 'title=AK-47' \\\n  --data-urlencode 'treeFilters=categoryPath=rifle,exterior[]=factory new' \\\n  --data-urlencode 'orderBy=price' \\\n  --data-urlencode 'orderDir=asc' \\\n  --data-urlencode 'limit=10' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\""
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"gameId\": \"a8db\",\n    \"title\": \"AK-47\",\n    \"treeFilters\": \"categoryPath=rifle,exterior[]=factory new\",\n    \"orderBy\": \"price\",\n    \"orderDir\": \"asc\",\n    \"limit\": 10\n}\nresult, err = client.call(\"GET\", \"/marketplace-api/v2/user/targets\", payload=payload)\nprint(result)"
+  /marketplace-api/v1/user-targets/closed:
+    get:
+      tags:
+      - Buy items
+      summary: List user closed targets
+      description: Get the list of the user’s closed targets. The price amount format is in USD, i.e. 0.5 is 50 cents.
+      operationId: GetUserClosedTargets
+      parameters:
+      - name: Limit
+        in: query
+        description: Limits number of returned closed targets in response.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: uint64
+      - name: OrderDir
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: desc
+          enum:
+          - desc
+          - asc
+      - name: TargetCreated.From
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+          example: '1730419200'
+      - name: TargetCreated.To
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+          example: '1730419200'
+      - name: TargetClosed.From
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+          example: '1730419200'
+      - name: TargetClosed.To
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+          example: '1730419200'
+      - name: Cursor
+        description: Cursor is next page identifier.
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: Finalization.From
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+          example: '1730419200'
+      - name: Finalization.To
+        in: query
+        required: false
+        schema:
+          type: string
+          format: int64
+          example: '1730419200'
+      - name: Status
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - successful
+            - reverted
+            - trade_protected
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/marketplaceGetUserClosedTargetsResponse'
+        default:
+          description: An unexpected error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -G 'https://api.dmarket.com/marketplace-api/v1/user-targets/closed' \\\n  --data-urlencode 'Limit=10' \\\n  --data-urlencode 'OrderDir=desc' \\\n  --data-urlencode 'Status=successful' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\""
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"Limit\": 10,\n    \"OrderDir\": \"desc\",\n    \"Status\": \"successful\"\n}\nresult, err = client.call(\"GET\", \"/marketplace-api/v1/user-targets/closed\", payload=payload)\nprint(result)"
+  /marketplace-api/v1/user-targets/create:
+    post:
+      tags:
+      - Buy items
+      summary: Create targets
+      description: 'The request for target creation requires the following fields: "GameID" param (values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust) and array of "Targets". The price amount format is in USD, i.e. 0.5 is 50 cents, "Title" - full item name.
+
+        Also, additional attributes ("Attrs" field in #/components/schemas/marketplaceCreateTargetRequest) for each item such as "phase", "floatPartValue" and "paintSeed" are available. You can check possible values of additional attributes here.
+
+        Limitations: maximum "Amount" value is 100; maximum quantity of targets in one request is 100; maximum number of created targets for one game is individual for each user and can be different for each game. You can contact our customer support team to find out your Target''s limit.'
+      operationId: CreateTargets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/marketplaceCreateTargetsRequest'
+            example:
+              GameID: a8db
+              Targets:
+              - Amount: '1'
+                Price:
+                  Currency: USD
+                  Amount: 10.5
+                Title: AK-47 | Redline (Field-Tested)
+                Attrs:
+                  floatPartValue: FT-0
+        required: true
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/marketplaceCreateTargetsResponse'
+        default:
+          description: An unexpected error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -X POST 'https://api.dmarket.com/marketplace-api/v1/user-targets/create' \\\n  -H 'Content-Type: application/json' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\" \\\n  -d '{\n  \"GameID\": \"a8db\",\n  \"Targets\": [\n    {\n      \"Amount\": \"1\",\n      \"Price\": {\n        \"Currency\": \"USD\",\n        \"Amount\": 10.5\n      },\n      \"Title\": \"AK-47 | Redline (Field-Tested)\",\n      \"Attrs\": {\n        \"floatPartValue\": \"FT-0\"\n      }\n    }\n  ]\n}'"
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"GameID\": \"a8db\",\n    \"Targets\": [\n        {\n            \"Amount\": \"1\",\n            \"Price\": {\n                \"Currency\": \"USD\",\n                \"Amount\": 10.5\n            },\n            \"Title\": \"AK-47 | Redline (Field-Tested)\",\n            \"Attrs\": {\n                \"floatPartValue\": \"FT-0\"\n            }\n        }\n    ]\n}\nresult, err = client.call(\"POST\", \"/marketplace-api/v1/user-targets/create\", payload=payload)\nprint(result)"
+  /marketplace-api/v1/user-targets/delete:
+    post:
+      tags:
+      - Buy items
+      summary: Remove targets
+      description: Remove targets.
+      operationId: DeleteTargets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/marketplaceDeleteTargetsRequest'
+            example:
+              Targets:
+              - TargetID: d4e5f6a7-b8c9-0123-def0-456789012345
+        required: true
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/marketplaceDeleteTargetsResponse'
+        default:
+          description: An unexpected error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -X POST 'https://api.dmarket.com/marketplace-api/v1/user-targets/delete' \\\n  -H 'Content-Type: application/json' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\" \\\n  -d '{\n  \"Targets\": [\n    {\n      \"TargetID\": \"d4e5f6a7-b8c9-0123-def0-456789012345\"\n    }\n  ]\n}'"
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"Targets\": [\n        {\n            \"TargetID\": \"d4e5f6a7-b8c9-0123-def0-456789012345\"\n        }\n    ]\n}\nresult, err = client.call(\"POST\", \"/marketplace-api/v1/user-targets/delete\", payload=payload)\nprint(result)"
+  /marketplace-api/v2/offers:
+    get:
+      tags:
+      - Buy items
+      summary: List marketplace offers
+      description: 'Get the list of offers currently available for purchase on the DMarket storefront. Prices are returned as integer cents. ''gameId'' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust.'
+      operationId: GetMarketplaceOffersV2
+      x-badges:
+      - name: NEW
+        color: '#04BA39'
+      parameters:
+      - name: gameId
+        in: query
+        description: 'Game identifier. One of: a8db (CS2), 9a92 (Dota 2), tf2, rust.'
+        required: true
+        schema:
+          type: string
+          enum:
+          - a8db
+          - 9a92
+          - tf2
+          - rust
+        example: a8db
+      - name: title
+        in: query
+        description: Filter offers by title prefix (case-insensitive).
+        required: false
+        schema:
+          type: string
+      - name: treeFilters
+        in: query
+        description: 'Attribute filters in comma-separated key=value format. Values must match how the attribute is stored (typically the lowercase Steam string; see allowed values below).
+
+
+          Supported common keys: `categoryPath`, `type`, `tradeLockFrom`, `tradeLockTo`. Filter by game, title, and price via the top-level `gameId`, `title`, and `priceFrom`/`priceTo` query parameters.
+
+
+          CS2 keys: `exterior`, `paintSeed`, `floatPart`, `phase`, `category`, `collection`, `charmName`, `charmExists`, `sticker`, `isProskin`, `fadePercentFrom`, `fadePercentTo`.
+
+
+          TF2 keys: `exterior`, `collection`, `isCraftable`. Dota 2 keys: `hero`.
+
+
+          Allowed CS2 values:
+
+          - `exterior`: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `not painted`
+
+          - `phase`: `phase-1`, `phase-2`, `phase-3`, `phase-4`, `ruby`, `sapphire`, `emerald`, `black-pearl`
+
+          - `floatPart`: `FN-0`..`FN-6`, `MW-0`..`MW-4`, `FT-0`..`FT-4`, `WW-0`..`WW-4`, `BS-0`..`BS-4` (bucketed float ranges per exterior)
+
+          - `category`: `stattrak_tm` (`_tm` is translated to the ™ symbol server-side), `souvenir`, `normal`, `★` (knives)
+
+
+          Allowed TF2 exterior values: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `battle scarred`.
+
+
+          Multi-value: suffix key with `[]`, e.g. `exterior[]=factory new,exterior[]=minimal wear` (URL-encode the space as `%20`).
+
+
+          Negation: prefix key with `not_`, e.g. `not_exterior=factory new`. Negation is not supported for `charmName`/`sticker`.
+
+
+          Ranges: `fadePercentFrom=10,fadePercentTo=90`. Steam trade-lock filtering uses `tradeLockFrom`/`tradeLockTo` (remaining lock in days; `tradeLockFrom` is inclusive, `tradeLockTo` is exclusive).
+
+
+          Existence check: `charmExists=true` / `charmExists=false`.
+
+
+          Charm and sticker filters (`charmName`, `sticker[]`, `charmExists`) apply to CS2 offers only.
+
+
+          Example: `categoryPath=rifle,exterior[]=factory new,exterior[]=minimal wear`.'
+        required: false
+        schema:
+          type: string
+        example: categoryPath=rifle,exterior[]=factory new
+      - name: priceFrom
+        in: query
+        description: Lower bound of the offer price range in cents (inclusive).
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: priceTo
+        in: query
+        description: Upper bound of the offer price range in cents (inclusive).
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: orderBy
+        in: query
+        description: 'Sort field. Supported values: `price`, `title`, `float`, `createdAt`.'
+        required: false
+        schema:
+          type: string
+          enum:
+          - price
+          - title
+          - float
+          - createdAt
+      - name: orderDir
+        in: query
+        description: Sort direction. Defaults to `asc` when `orderBy` is set.
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: limit
+        in: query
+        description: Number of items to return per page. Range 1..100.
+        required: true
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 100
+      - name: cursor
+        in: query
+        description: Pagination cursor returned from a previous response.
+        required: false
+        schema:
+          type: string
+          maxLength: 500
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/marketplacev2GetMarketplaceOffersResponse'
+              example:
+                items:
+                - offerId: f7c1b8e2-9a3d-4e6f-bb12-3a5c9d0e1f23
+                  priceCents: 1599
+                  createdAt: '2026-06-17T10:30:00Z'
+                  locked: false
+                  attributes:
+                    title: AK-47 | Redline (Field-Tested)
+                    gameId: a8db
+                    categoryPath: rifle/ak-47
+                    tradable: true
+                    cs2Attributes:
+                      exterior: field-tested
+                      floatValue: 0.2356
+                      paintSeed: 412
+                total: 128
+                cursor: eyJvZmZzZXQiOjEwfQ==
+        default:
+          description: An unexpected error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -G 'https://api.dmarket.com/marketplace-api/v2/offers' \\\n  --data-urlencode 'gameId=a8db' \\\n  --data-urlencode 'title=AK-47' \\\n  --data-urlencode 'treeFilters=categoryPath=rifle,exterior[]=factory new' \\\n  --data-urlencode 'priceFrom=500' \\\n  --data-urlencode 'priceTo=5000' \\\n  --data-urlencode 'orderBy=price' \\\n  --data-urlencode 'orderDir=asc' \\\n  --data-urlencode 'limit=10' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\""
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"gameId\": \"a8db\",\n    \"title\": \"AK-47\",\n    \"treeFilters\": \"categoryPath=rifle,exterior[]=factory new\",\n    \"priceFrom\": 500,\n    \"priceTo\": 5000,\n    \"orderBy\": \"price\",\n    \"orderDir\": \"asc\",\n    \"limit\": 10\n}\nresult, err = client.call(\"GET\", \"/marketplace-api/v2/offers\", payload=payload)\nprint(result)"
+  /exchange/v1/offers-buy:
+    patch:
+      tags:
+      - Buy items
+      summary: Buy offers
+      description: 'Buy the selected offers from the market. As the result of the operation: the offer is removed, the items are transferred to the buyer, the purchase amount is transferred to the seller, the fee is transferred to DMarket. The price amount format is in coins (cents for USD).'
+      operationId: buyOffers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/entity.OfferBuyRequest'
+            example:
+              offers:
+              - offerId: c3d4e5f6-a7b8-9012-cdef-345678901234
+                price:
+                  amount: '4999'
+                  currency: USD
+                type: dmarket
+        required: true
+      responses:
+        '200':
+          description: No content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/entity.OfferBuyResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rest.ErrorRepresentation'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rest.ErrorRepresentation'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rest.ErrorRepresentation'
+        default:
+          description: No content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/entity.OfferBuyResponse'
+      x-codeSamples:
+      - lang: Shell
+        label: cURL
+        source: "# Sign the request and set the three auth headers — reference clients: https://github.com/dmarket/dm-trading-tools\ncurl -X PATCH 'https://api.dmarket.com/exchange/v1/offers-buy' \\\n  -H 'Content-Type: application/json' \\\n  -H \"X-Api-Key: $DMARKET_PUBLIC_KEY\" \\\n  -H \"X-Sign-Date: $TIMESTAMP\" \\\n  -H \"X-Request-Sign: dmar ed25519 $SIGNATURE\" \\\n  -d '{\n  \"offers\": [\n    {\n      \"offerId\": \"c3d4e5f6-a7b8-9012-cdef-345678901234\",\n      \"price\": {\n        \"amount\": \"4999\",\n        \"currency\": \"USD\"\n      },\n      \"type\": \"dmarket\"\n    }\n  ]\n}'"
+      - lang: Python
+        label: Python (dm-trading-tools)
+        source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"offers\": [\n        {\n            \"offerId\": \"c3d4e5f6-a7b8-9012-cdef-345678901234\",\n            \"price\": {\n                \"amount\": \"4999\",\n                \"currency\": \"USD\"\n            },\n            \"type\": \"dmarket\"\n        }\n    ]\n}\nresult, err = client.call(\"PATCH\", \"/exchange/v1/offers-buy\", payload=payload)\nprint(result)"
+components:
+  schemas:
+    marketplaceCreateTargetsRequest:
+      type: object
+      properties:
+        GameID:
+          type: string
+          description: GameID of same assets in one single target entity.
+        Targets:
+          type: array
+          description: List of targets to create.
+          items:
+            $ref: '#/components/schemas/marketplaceCreateTargetRequest'
+    ListAggregatedPricesResponseAggregatedPrice:
+      type: object
+      properties:
+        title:
+          type: string
+        orderBestPrice:
+          $ref: '#/components/schemas/commonMoney'
+        orderCount:
+          type: string
+          format: int64
+        offerBestPrice:
+          $ref: '#/components/schemas/commonMoney'
+        offerCount:
+          type: string
+          format: int64
+    .dmOffersFailReason:
+      required:
+      - code
+      properties:
+        code:
+          type: string
+    rest.ErrorRepresentation:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    entity.OfferPrice:
+      required:
+      - offerId
+      - price
+      - type
+      properties:
+        offerId:
+          type: string
+        price:
+          $ref: '#/components/schemas/entity.Money'
+        type:
+          type: string
+          default: dmarket
+          enum:
+          - dmarket
+          - p2p
+    marketplacev2TargetStatus:
+      type: string
+      description: "Target status.\n - TARGET_STATUS_ACTIVE: Target is currently active and can be matched with offers.\n - TARGET_STATUS_INACTIVE: Target is currently inactive."
+      default: TARGET_STATUS_UNSPECIFIED
+      enum:
+      - TARGET_STATUS_UNSPECIFIED
+      - TARGET_STATUS_ACTIVE
+      - TARGET_STATUS_INACTIVE
+    marketplacev2OfferV2:
+      type: object
+      description: Marketplace offer with typed attributes.
+      properties:
+        attributes:
+          description: Game-specific asset attributes. See `asset.Attributes` in the marketplace-api proto schema for the full oneof definition.
+          type: object
+          additionalProperties: true
+        priceCents:
+          type: integer
+          format: int64
+          description: Offer price in cents.
+        createdAt:
+          type: string
+          format: date-time
+        locked:
+          type: boolean
+          description: Whether the offer is currently locked (for example, reserved by an in-flight trade) and so cannot be bought.
+        offerId:
+          type: string
+          description: Offer unique identifier.
+    marketplaceDeleteTargetResponse:
+      type: object
+      properties:
+        DeleteTarget:
+          $ref: '#/components/schemas/marketplaceDeleteTargetRequest'
+        Successful:
+          type: boolean
+          description: True if operation was successful.
+          format: boolean
+        Error:
+          $ref: '#/components/schemas/marketplaceErrorDetails'
+    marketplaceMoney:
+      type: object
+      properties:
+        Currency:
+          type: string
+          description: Currency code.
+        Amount:
+          type: number
+          format: float
+          description: Money amount.
+    marketplaceCreateTargetRequest:
+      type: object
+      properties:
+        Amount:
+          type: string
+          description: Amount of same assets in one single target entity.
+          format: uint64
+        Price:
+          $ref: '#/components/schemas/marketplaceMoney'
+        Title:
+          type: string
+          description: Title of same assets in one single target entity.
+        Attrs:
+          type: object
+          format: object
+          properties:
+            paintSeed:
+              description: https://dmarket.com/blog/dmarket-api-for-automated-trading/#pattern-values
+              type: integer
+              nullable: true
+            phase:
+              description: https://dmarket.com/blog/dmarket-api-for-automated-trading/#phase-values
+              type: string
+              nullable: true
+              enum:
+              - ''
+              - phase-1
+              - phase-2
+              - phase-3
+              - phase-4
+              - ruby
+              - emerald
+              - sapphire
+              - black-pearl
+            floatPartValue:
+              description: https://dmarket.com/blog/dmarket-api-for-automated-trading/#float-values
+              type: string
+              nullable: true
+              enum:
+              - ''
+              - FN-0
+              - FN-1
+              - FN-2
+              - FN-3
+              - FN-4
+              - FN-5
+              - FN-6
+              - MW-0
+              - MW-1
+              - MW-2
+              - MW-3
+              - MW-4
+              - FT-0
+              - FT-1
+              - FT-2
+              - FT-3
+              - FT-4
+              - WW-0
+              - WW-1
+              - WW-2
+              - WW-3
+              - WW-4
+              - BS-0
+              - BS-1
+              - BS-2
+              - BS-3
+              - BS-4
+    marketplaceErrorDetails:
+      type: object
+      properties:
+        Code:
+          $ref: '#/components/schemas/marketplaceErrorCodes'
+        Message:
+          type: string
+          description: Human readable error message.
+    marketplaceGetUserClosedTargetsResponse:
+      type: object
+      properties:
+        Trades:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetUserClosedTargetsResponseTrade'
+        Total:
+          type: string
+          format: uint64
+        Cursor:
+          type: string
+          description: Cursor is a next page identifier.
+    marketplaceErrorCodes:
+      type: string
+      description: "http code 400(Bad Request):\n  * `NotEnoughBalance` - Not enough balance\n  * `InvalidAPIKey` - InvalidAPIKey\n"
+      default: Internal
+      enum:
+      - Internal
+      - Unauthorized
+      - NotEnoughBalance
+      - ActiveSubscriptionExists
+      - InsufficientFunds
+      - SubscriptionPurchaseIsBlocked
+      - RecaptchaRequired
+      - WrongRecaptcha
+      - BadCredentials
+      - EmailIsNotVerified
+      - InvalidOTPCode
+      - OTPDisabled
+      - OTPSessionExpired
+      - TitleRequired
+      - InvalidPeriod
+      - BadRequest
+      - GameIDRequired
+      - MFAAlreadyEnabled
+      - DepositTransferNotFound
+      - WithdrawTransferNotFound
+      - InventoryItemsNotFound
+      - UnsupportedAuthProvider
+      - FieldCouldNotBeAnEmpty
+      - TokenNotValid
+      - InvalidTransferAssetCount
+      - GameIsNotLinkedToYourAccount
+      - DuplicatedAssets
+      - TransferNotFound
+      - InvalidUUID
+      - UnsupportedPaymentType
+      - UnsupportedCurrency
+      - GetReturnURL
+      - UpdatePaymentDepositTx
+      - DepositTxNoFound
+      - WithdrawTxNoFound
+      - KYCVerificationFailed
+      - PaymentMethodNotFound
+      - KycError
+      - TxNotFound
+      - InternalServerError
+      - AttemptsLimitExceeded
+      - InvalidCountryCode
+      - Banned
+      - InvalidReturnUrl
+      - InvalidConfirmationHash
+      - IPConfirmationMismatch
+      - EmailNotValid
+      - AccountDepositThresholdLimitExceeded
+      - InvalidAmount
+      - NoActiveIPConfirmations
+      - UnsupportedDevice
+      - AccountNotRegisteredYet
+      - TokenDoesNotExists
+      - SameEmailExists
+      - UnsupportedInventorySyncType
+      - InvalidTokenizationID
+      - TokenizationNotFound
+      - TokenizationNotEditable
+      - TokenizationFailed
+      - InvalidPaymentMethod
+      - MaxTokenizationsExceeded
+      - DeprecatedArguments
+      - PhoneNumberRequired
+      - InvalidPhoneNumber
+      - InvalidSignature
+      - InvalidAPIKey
+      - APIKeyDisabled
+    GetTargetsByTitleResponseOrder:
+      type: object
+      properties:
+        amount:
+          type: string
+          format: uint64
+        price:
+          type: string
+        title:
+          type: string
+        attributes:
+          type: object
+    commonMoney:
+      type: object
+      properties:
+        Currency:
+          type: string
+          title: 3 letter currency code, USD
+        Amount:
+          type: string
+          title: integer value in coins (cents for USD)
+    marketplaceDeleteTargetsResponse:
+      type: object
+      properties:
+        Result:
+          type: array
+          description: Results for each sent request.
+          items:
+            $ref: '#/components/schemas/marketplaceDeleteTargetResponse'
+    marketplaceDeleteTargetRequest:
+      type: object
+      properties:
+        TargetID:
+          type: string
+          description: Unique target identifier.
+    marketplaceCreateTargetResponse:
+      type: object
+      properties:
+        CreateTarget:
+          $ref: '#/components/schemas/marketplaceCreateTargetRequest'
+        TargetID:
+          type: string
+          description: Target identifier in case of successful create.
+        Successful:
+          type: boolean
+          description: True if operation was successful.
+          format: boolean
+        Error:
+          $ref: '#/components/schemas/marketplaceErrorDetails'
+    entity.P2POffersStatus:
+      required:
+      - started
+      properties:
+        started:
+          type: boolean
+    GetUserClosedTargetsResponseTrade:
+      type: object
+      properties:
+        OfferID:
+          type: string
+        TargetID:
+          type: string
+        AssetID:
+          type: string
+        Price:
+          $ref: '#/components/schemas/marketplaceMoney'
+        CurrencyCode:
+          type: string
+        Amount:
+          type: string
+          format: uint64
+        Title:
+          type: string
+        ClosedAt:
+          type: string
+          format: int64
+        Status:
+          $ref: '#/components/schemas/marketplaceTradeStatus'
+        FinalizationTime:
+          type: string
+          format: int64
+    entity.OfferBuyResponse:
+      required:
+      - dmOffersFailReason
+      - orderId
+      - status
+      - txId
+      properties:
+        dmOffersFailReason:
+          $ref: '#/components/schemas/.dmOffersFailReason'
+        dmOffersStatus:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/entity.DMOffersStatus'
+        orderId:
+          type: string
+        p2pOffersStatus:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/entity.P2POffersStatus'
+        status:
+          type: string
+          enum:
+          - TxPending
+          - TxSuccess
+          - TxFailed
+        txId:
+          type: string
+    marketplacev2GetMarketplaceOffersResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          description: Marketplace offers.
+          items:
+            $ref: '#/components/schemas/marketplacev2OfferV2'
+        total:
+          type: integer
+          format: int64
+          description: Total number of offers matching the filter criteria across all pages, independent of limit/cursor.
+        cursor:
+          type: string
+          description: Cursor for the next page. Empty when there are no more pages.
+    marketplaceGetTargetsByTitleResponse:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetTargetsByTitleResponseOrder'
+    marketplaceListAggregatedPricesRequest:
+      type: object
+      properties:
+        cursor:
+          type: string
+        limit:
+          type: string
+          format: int64
+        filter:
+          $ref: '#/components/schemas/ListAggregatedPricesRequestFilter'
+    entity.Money:
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: string
+        currency:
+          type: string
+          enum:
+          - USD
+          - DMC
+    marketplacev2GetUserTargetsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          description: User targets.
+          items:
+            $ref: '#/components/schemas/marketplacev2Target'
+        total:
+          type: integer
+          format: int64
+          description: Total number of targets matching the filter criteria across all pages, independent of limit/cursor.
+        cursor:
+          type: string
+          description: Cursor for the next page. Empty when there are no more pages.
+    marketplacev2TargetAttributesCS2:
+      type: object
+      properties:
+        category:
+          type: string
+        exterior:
+          type: string
+        phase:
+          type: string
+        paintSeed:
+          type: integer
+          format: int32
+        floatPart:
+          type: string
+        isAdvanced:
+          type: boolean
+    marketplaceListAggregatedPricesResponse:
+      type: object
+      properties:
+        aggregatedPrices:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListAggregatedPricesResponseAggregatedPrice'
+        nextCursor:
+          type: string
+    marketplacev2TargetAttributes:
+      type: object
+      description: Target attributes. `categoryPath`, `image`, `title`, `name` are shared across games; game-specific attributes are carried in the `cs2` field.
+      properties:
+        categoryPath:
+          type: string
+        image:
+          type: string
+        title:
+          type: string
+        name:
+          type: string
+        cs2:
+          $ref: '#/components/schemas/marketplacev2TargetAttributesCS2'
+    entity.OfferBuyRequest:
+      required:
+      - offers
+      properties:
+        offers:
+          type: array
+          items:
+            $ref: '#/components/schemas/entity.OfferPrice'
+    ListAggregatedPricesRequestFilter:
+      type: object
+      properties:
+        game:
+          type: string
+        titles:
+          type: array
+          items:
+            type: string
+    marketplaceTradeStatus:
+      type: string
+      enum:
+      - successful
+      - reverted
+      - trade_protected
+      default: successful
+    marketplacev2Target:
+      type: object
+      description: User target with typed attributes.
+      properties:
+        targetId:
+          type: string
+          description: Target unique identifier.
+        title:
+          type: string
+        amount:
+          type: integer
+          format: int64
+          description: Number of matching items requested under this target.
+        status:
+          $ref: '#/components/schemas/marketplacev2TargetStatus'
+        priceCents:
+          type: integer
+          format: int64
+          description: Target price in cents.
+        attributes:
+          $ref: '#/components/schemas/marketplacev2TargetAttributes'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    marketplaceCreateTargetsResponse:
+      type: object
+      properties:
+        Result:
+          type: array
+          description: Results for each sent request.
+          items:
+            $ref: '#/components/schemas/marketplaceCreateTargetResponse'
+    marketplaceDeleteTargetsRequest:
+      type: object
+      properties:
+        Targets:
+          type: array
+          description: Targets list to delete.
+          items:
+            $ref: '#/components/schemas/marketplaceDeleteTargetRequest'
+    runtimeError:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    entity.DMOffersStatus:
+      required:
+      - started
+      properties:
+        started:
+          type: boolean
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Public API key (lowercase hex). Generate it in your DMarket account settings. See https://dmarket.com/faq#tradingAPI.
+    SignDate:
+      type: apiKey
+      in: header
+      name: X-Sign-Date
+      description: Unix timestamp in seconds at signing time (e.g. 1605619994). Must be within 2 minutes of server time.
+    RequestSign:
+      type: apiKey
+      in: header
+      name: X-Request-Sign
+      description: 'Ed25519 request signature prefixed with `dmar ed25519 `. Sign the concatenation of HTTP method + path (including query string) + body + X-Sign-Date with your secret key, then hex-encode the 64-byte Ed25519 signature. Reference clients (Go, Python, JS, PHP): https://github.com/dmarket/dm-trading-tools.'
+x-tagGroups:
+- name: Account
+  tags:
+  - Account
+- name: Trading
+  tags:
+  - Buy items
+  - Sell Items
+  - Sold user items
+- name: Inventory
+  tags:
+  - Inventory/items
+- name: Market data
+  tags:
+  - Aggregator
