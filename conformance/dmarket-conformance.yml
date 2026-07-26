@@ -1,0 +1,23 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/dmarket-trading-openapi.yml
+standards:
+- id: oauth2
+  conforms: false
+  evidence: No oauth2 securityScheme; uses signed apiKey headers
+- id: oidc
+  conforms: false
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Errors use a custom {code,message} envelope, not application/problem+json
+- id: json:api
+  conforms: false
+- id: cursor-pagination
+  conforms: true
+  evidence: Cursor-based pagination on list endpoints
+- id: idempotency
+  conforms: false
+  evidence: No idempotency-key contract documented
+- id: ed25519-request-signing
+  conforms: true
+  evidence: X-Request-Sign Ed25519 signature required on every request

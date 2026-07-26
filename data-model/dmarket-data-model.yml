@@ -1,0 +1,72 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/dmarket-trading-openapi.yml
+note: Entity graph derived from OpenAPI schemas and id-reference fields in the Trading API.
+entities:
+- name: User
+  schema: representation.UserAccountResponse
+  key: id
+- name: Balance
+  schema: representation.UserBalance
+- name: Asset
+  schema: entity.Asset
+  key: AssetID
+  note: An in-game item instance
+- name: Offer
+  schema: entity.OfferBuyRequest/marketplace offers
+  key: OfferID
+  note: A sell listing on the marketplace
+- name: Target
+  schema: marketplaceCreateTargetResponse
+  key: TargetID
+  note: A buy order for an item title
+- name: Deposit
+  schema: marketplaceDepositAssetsResponse
+  key: DepositID
+- name: Withdrawal
+  schema: entity.WithdrawResponse
+- name: Money
+  schema: entity.Money
+  note: amount + currency (USD cents)
+- name: Fee
+  schema: entity.ListFeeResponse
+- name: Sale
+  schema: GetLastSalesResponseSale
+  note: Historical trade record
+relationships:
+- from: User
+  type: has_one
+  to: Balance
+  via: userId
+- from: User
+  type: has_many
+  to: Asset
+  via: inventory
+- from: User
+  type: has_many
+  to: Offer
+  via: userId
+- from: User
+  type: has_many
+  to: Target
+  via: userId
+- from: Offer
+  type: belongs_to
+  to: Asset
+  via: AssetID
+- from: Offer
+  type: has_one
+  to: Money
+  via: price
+- from: Target
+  type: has_one
+  to: Money
+  via: price
+- from: Deposit
+  type: has_many
+  to: Asset
+  via: Assets
+- from: Offer
+  type: has_one
+  to: Fee
+  via: fee

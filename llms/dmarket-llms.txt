@@ -1,0 +1,30 @@
+# DMarket
+
+> DMarket is a marketplace for trading in-game items and skins (CS2, Dota 2, TF2, Rust) with a public JSON Trading API for programmatic inventory management, buying, selling, and price discovery. Every request is authenticated with a public API key and an Ed25519 request signature.
+
+## APIs
+
+- [DMarket Trading API (Swagger)](https://docs.dmarket.com/v1/swagger.html): Manage inventory, buy/sell offers, place buy targets, deposit/withdraw assets, and read sales history. Base URL https://api.dmarket.com.
+
+## Specs
+
+- [OpenAPI 3.0.4](https://raw.githubusercontent.com/api-evangelist/dmarket/refs/heads/main/openapi/dmarket-trading-openapi.yml): DMarket Trading API v2.0.0, 22 operations.
+
+## Reference clients
+
+- [dm-trading-tools](https://github.com/dmarket/dm-trading-tools): First-party request-signing example clients (Go, Python, JavaScript, PHP).
+- [integration-sdk](https://github.com/dmarket/integration-sdk): Go integration SDK.
+- [marketplace-api-cpp-sdk](https://github.com/dmarket/marketplace-api-cpp-sdk): C++ SDK.
+
+## Docs
+
+- [Trading API FAQ](https://dmarket.com/faq#tradingAPI): How to generate API keys and sign requests.
+- [Developer artifacts (enriched)](https://raw.githubusercontent.com/api-evangelist/dmarket/refs/heads/main/apis.yml): Authentication, conventions, error catalog, data model, agent skills.
+
+## Company
+
+- [DMarket](https://dmarket.com/): In-game items marketplace.
+- [Terms of Use](https://dmarket.com/terms-of-use)
+- [Privacy Policy](https://dmarket.com/privacy-policy)
+- [Blog](https://dmarket.com/blog)
+- [Pricing / Fees](https://dmarket.com/pricing)

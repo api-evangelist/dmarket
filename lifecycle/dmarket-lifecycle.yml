@@ -1,0 +1,16 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.dmarket.com/v1/swagger.html
+versioning:
+  scheme: uri-path
+  current: v2
+  notes: Path-versioned segments (v1/v2). Trading API document version v2.0.0.
+  docs: https://docs.dmarket.com/v1/swagger.html
+deprecation:
+  policy_url: null
+  sunset_header: false
+  notes: No formal deprecation policy or Sunset/Deprecation header support published. Some request arguments
+    are flagged via a DeprecatedArguments error code.
+status_page: null
+sla: null
+deprecated_operations: []

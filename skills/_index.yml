@@ -1,0 +1,16 @@
+generated: '2026-07-18'
+method: generated
+source: openapi/dmarket-trading-openapi.yml
+skills:
+- file: dmarket-buy-item.md
+  name: Buy an item on the DMarket marketplace
+  api: openapi/dmarket-trading-openapi.yml
+  operations: [getUserBalance, GetMarketplaceOffersV2, buyOffers]
+- file: dmarket-sell-inventory.md
+  name: Deposit and list an inventory item for sale on DMarket
+  api: openapi/dmarket-trading-openapi.yml
+  operations: [UserInventorySync, GetUserInventoryV2, DepositAssets, GetDepositStatus]
+- file: dmarket-place-buy-target.md
+  name: Place a buy order (target) on DMarket
+  api: openapi/dmarket-trading-openapi.yml
+  operations: [MarketAPI_ListAggregatedPrices, CreateTargets, GetUserTargetsV2, DeleteTargets]

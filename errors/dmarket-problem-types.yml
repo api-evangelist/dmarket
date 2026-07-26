@@ -1,0 +1,103 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/dmarket-trading-openapi.yml
+format: custom
+note: DMarket does not use RFC 9457 problem+json. Errors return a JSON envelope {code, message, validationDetails?}.
+  HTTP problem statuses derived from OpenAPI 4xx/5xx responses; string error codes from the marketplaceErrorCodes
+  enum in the spec.
+envelope:
+  schema: api.ErrorRepresentation
+  fields:
+  - field: code
+    type: string
+    description: Machine-readable error code (see error_codes below)
+  - field: message
+    type: string
+    description: Human-readable error message
+  - field: validationDetails
+    type: object
+    description: Field-level validation errors when present
+http_problems:
+- status: 400
+  title: Bad request
+  example_operation: buyOffers
+- status: 401
+  title: Unauthorized
+  example_operation: getUserByTokenHandler
+- status: 404
+  title: Not Found
+  example_operation: getUserByTokenHandler
+- status: 409
+  title: Conflict
+  example_operation: getUserBalance
+- status: 500
+  title: Internal Server Error
+  example_operation: getUserByTokenHandler
+error_codes:
+- Internal
+- Unauthorized
+- NotEnoughBalance
+- ActiveSubscriptionExists
+- InsufficientFunds
+- SubscriptionPurchaseIsBlocked
+- RecaptchaRequired
+- WrongRecaptcha
+- BadCredentials
+- EmailIsNotVerified
+- InvalidOTPCode
+- OTPDisabled
+- OTPSessionExpired
+- TitleRequired
+- InvalidPeriod
+- BadRequest
+- GameIDRequired
+- MFAAlreadyEnabled
+- DepositTransferNotFound
+- WithdrawTransferNotFound
+- InventoryItemsNotFound
+- UnsupportedAuthProvider
+- FieldCouldNotBeAnEmpty
+- TokenNotValid
+- InvalidTransferAssetCount
+- GameIsNotLinkedToYourAccount
+- DuplicatedAssets
+- TransferNotFound
+- InvalidUUID
+- UnsupportedPaymentType
+- UnsupportedCurrency
+- GetReturnURL
+- UpdatePaymentDepositTx
+- DepositTxNoFound
+- WithdrawTxNoFound
+- KYCVerificationFailed
+- PaymentMethodNotFound
+- KycError
+- TxNotFound
+- InternalServerError
+- AttemptsLimitExceeded
+- InvalidCountryCode
+- Banned
+- InvalidReturnUrl
+- InvalidConfirmationHash
+- IPConfirmationMismatch
+- EmailNotValid
+- AccountDepositThresholdLimitExceeded
+- InvalidAmount
+- NoActiveIPConfirmations
+- UnsupportedDevice
+- AccountNotRegisteredYet
+- TokenDoesNotExists
+- SameEmailExists
+- UnsupportedInventorySyncType
+- InvalidTokenizationID
+- TokenizationNotFound
+- TokenizationNotEditable
+- TokenizationFailed
+- InvalidPaymentMethod
+- MaxTokenizationsExceeded
+- DeprecatedArguments
+- PhoneNumberRequired
+- InvalidPhoneNumber
+- InvalidSignature
+- InvalidAPIKey
+- APIKeyDisabled

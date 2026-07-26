@@ -1,0 +1,30 @@
+generated: '2026-07-18'
+method: searched
+source: https://github.com/dmarket
+note: DMarket publishes first-party reference/example clients in its GitHub org rather than versioned
+  registry packages. None are published to npm/PyPI/etc.
+packages:
+- language: multi
+  registry: github
+  name: dmarket/dm-trading-tools
+  url: https://github.com/dmarket/dm-trading-tools
+  install: git clone https://github.com/dmarket/dm-trading-tools
+  official: true
+  languages:
+  - go
+  - python
+  - javascript
+  - php
+  note: Reference request-signing clients for the Trading API
+- language: go
+  registry: github
+  name: dmarket/integration-sdk
+  url: https://github.com/dmarket/integration-sdk
+  install: go get github.com/dmarket/integration-sdk
+  official: true
+- language: cpp
+  registry: github
+  name: dmarket/marketplace-api-cpp-sdk
+  url: https://github.com/dmarket/marketplace-api-cpp-sdk
+  install: git clone https://github.com/dmarket/marketplace-api-cpp-sdk
+  official: true

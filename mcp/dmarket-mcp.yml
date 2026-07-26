@@ -1,0 +1,67 @@
+generated: '2026-07-18'
+method: derived
+status: candidate
+source: openapi/dmarket-trading-openapi.yml
+note: No official DMarket MCP server found. Candidate tool list derived one-per-operation from the Trading
+  API OpenAPI.
+server:
+  name: dmarket
+  transport: stdio
+tools:
+- name: getUserByTokenHandler
+  description: Get user profile
+  source_operation: openapi/dmarket-trading-openapi.yml#getUserByTokenHandler
+- name: getUserBalance
+  description: Get account balance
+  source_operation: openapi/dmarket-trading-openapi.yml#getUserBalance
+- name: DepositAssets
+  description: Deposit assets
+  source_operation: openapi/dmarket-trading-openapi.yml#DepositAssets
+- name: GetDepositStatus
+  description: Get deposit status
+  source_operation: openapi/dmarket-trading-openapi.yml#GetDepositStatus
+- name: GetUserInventoryV2
+  description: List user inventory
+  source_operation: openapi/dmarket-trading-openapi.yml#GetUserInventoryV2
+- name: UserInventorySync
+  description: Sync inventory with Steam
+  source_operation: openapi/dmarket-trading-openapi.yml#UserInventorySync
+- name: GetUserOffersV2
+  description: List user offers
+  source_operation: openapi/dmarket-trading-openapi.yml#GetUserOffersV2
+- name: GetUserClosedOffers
+  description: List user closed offers
+  source_operation: openapi/dmarket-trading-openapi.yml#GetUserClosedOffers
+- name: MarketAPI_GetTargetsByTitle
+  description: Find buy orders (targets) by item title
+  source_operation: openapi/dmarket-trading-openapi.yml#MarketAPI_GetTargetsByTitle
+- name: MarketAPI_ListAggregatedPrices
+  description: Get aggregated market prices for item titles
+  source_operation: openapi/dmarket-trading-openapi.yml#MarketAPI_ListAggregatedPrices
+- name: GetUserTargetsV2
+  description: List user targets
+  source_operation: openapi/dmarket-trading-openapi.yml#GetUserTargetsV2
+- name: GetUserClosedTargets
+  description: List user closed targets
+  source_operation: openapi/dmarket-trading-openapi.yml#GetUserClosedTargets
+- name: CreateTargets
+  description: Create targets
+  source_operation: openapi/dmarket-trading-openapi.yml#CreateTargets
+- name: DeleteTargets
+  description: Remove targets
+  source_operation: openapi/dmarket-trading-openapi.yml#DeleteTargets
+- name: GetMarketplaceOffersV2
+  description: List marketplace offers
+  source_operation: openapi/dmarket-trading-openapi.yml#GetMarketplaceOffersV2
+- name: buyOffers
+  description: Buy offers
+  source_operation: openapi/dmarket-trading-openapi.yml#buyOffers
+- name: withdrawAssetsHandler
+  description: Withdraw assets
+  source_operation: openapi/dmarket-trading-openapi.yml#withdrawAssetsHandler
+- name: getCustomizedItems
+  description: List low-fee items
+  source_operation: openapi/dmarket-trading-openapi.yml#getCustomizedItems
+- name: Aggregator_GetLastSales
+  description: Get item sales history
+  source_operation: openapi/dmarket-trading-openapi.yml#Aggregator_GetLastSales

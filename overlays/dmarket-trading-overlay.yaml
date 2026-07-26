@@ -1,0 +1,23 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for DMarket Trading API
+  version: 1.0.0
+extends: openapi/dmarket-trading-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-enriched: '2026-07-18'
+    x-apievangelist-artifacts:
+    - authentication
+    - conventions
+    - errors
+    - lifecycle
+    - data-model
+    - packages
+    - mcp
+    - conformance
+    - skills
+- target: $.info
+  update:
+    x-agentic-note: Every request requires an Ed25519 signature (X-Request-Sign) plus X-Api-Key and X-Sign-Date
+      within a 2-minute window.

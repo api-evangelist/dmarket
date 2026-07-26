@@ -1,27 +1,247 @@
 aid: dmarket
 name: DMarket
-description: 'DMarket is a company surfaced as a portfolio company of pantera-capital and added to the
-  API Evangelist network as a stub for enrichment. Sector: crypto. This profile is a lead awaiting the
-  enrichment pipeline.'
+description: 'DMarket is a marketplace for trading in-game items and skins across titles like CS2 (CS:GO),
+  Dota 2, Team Fortress 2, and Rust. It offers a public JSON-based Trading API that lets developers
+  programmatically manage their DMarket inventory: read account balance, sync and deposit items from
+  linked game inventories, create and manage sell offers, place standing buy orders (targets), buy and
+  withdraw assets, read aggregated market prices, and pull sales history. Requests authenticate with a
+  public API key plus a per-request Ed25519 signature. DMarket was surfaced as a portfolio company of
+  Pantera Capital. Sector: crypto / gaming.'
 url: https://raw.githubusercontent.com/api-evangelist/dmarket/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - pantera-capital
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: profile
+x-tier-reason: enriched
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://dmarket.com/apple-touch-icon.png
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-18'
 tags:
 - Company
 - Crypto
-apis: []
+- Gaming
+- Marketplace
+- Trading
+- Skins
+- In-Game Items
+- Blockchain
+apis:
+- aid: dmarket:dmarket-account-api
+  name: DMarket Account API
+  description: User profile and balance.
+  humanURL: https://docs.dmarket.com/v1/swagger.html
+  baseURL: https://api.dmarket.com
+  tags:
+  - Account
+  properties:
+  - type: OpenAPI
+    url: openapi/dmarket-account-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dmarket.com/v1/swagger.html
+  - type: APIReference
+    url: https://docs.dmarket.com/v1/swagger.html
+  - type: Authentication
+    url: authentication/dmarket-authentication.yml
+  - type: Conventions
+    url: conventions/dmarket-conventions.yml
+  - type: ErrorCatalog
+    url: errors/dmarket-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/dmarket-lifecycle.yml
+  - type: DataModel
+    url: data-model/dmarket-data-model.yml
+  - type: Conformance
+    url: conformance/dmarket-conformance.yml
+- aid: dmarket:dmarket-aggregator-api
+  name: DMarket Aggregator API
+  description: Aggregated market price data.
+  humanURL: https://docs.dmarket.com/v1/swagger.html
+  baseURL: https://api.dmarket.com
+  tags:
+  - Aggregator
+  properties:
+  - type: OpenAPI
+    url: openapi/dmarket-aggregator-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dmarket.com/v1/swagger.html
+  - type: APIReference
+    url: https://docs.dmarket.com/v1/swagger.html
+  - type: Authentication
+    url: authentication/dmarket-authentication.yml
+  - type: Conventions
+    url: conventions/dmarket-conventions.yml
+  - type: ErrorCatalog
+    url: errors/dmarket-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/dmarket-lifecycle.yml
+  - type: DataModel
+    url: data-model/dmarket-data-model.yml
+  - type: Conformance
+    url: conformance/dmarket-conformance.yml
+- aid: dmarket:dmarket-buy-items-api
+  name: DMarket Buy items API
+  description: Browse marketplace offers and buy orders (targets), and purchase items.
+  humanURL: https://docs.dmarket.com/v1/swagger.html
+  baseURL: https://api.dmarket.com
+  tags:
+  - Buy items
+  properties:
+  - type: OpenAPI
+    url: openapi/dmarket-buy-items-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dmarket.com/v1/swagger.html
+  - type: APIReference
+    url: https://docs.dmarket.com/v1/swagger.html
+  - type: Authentication
+    url: authentication/dmarket-authentication.yml
+  - type: Conventions
+    url: conventions/dmarket-conventions.yml
+  - type: ErrorCatalog
+    url: errors/dmarket-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/dmarket-lifecycle.yml
+  - type: DataModel
+    url: data-model/dmarket-data-model.yml
+  - type: Conformance
+    url: conformance/dmarket-conformance.yml
+- aid: dmarket:dmarket-inventory-items-api
+  name: DMarket Inventory/items API
+  description: User inventory, deposits and withdrawals.
+  humanURL: https://docs.dmarket.com/v1/swagger.html
+  baseURL: https://api.dmarket.com
+  tags:
+  - Inventory/items
+  properties:
+  - type: OpenAPI
+    url: openapi/dmarket-inventory-items-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dmarket.com/v1/swagger.html
+  - type: APIReference
+    url: https://docs.dmarket.com/v1/swagger.html
+  - type: Authentication
+    url: authentication/dmarket-authentication.yml
+  - type: Conventions
+    url: conventions/dmarket-conventions.yml
+  - type: ErrorCatalog
+    url: errors/dmarket-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/dmarket-lifecycle.yml
+  - type: DataModel
+    url: data-model/dmarket-data-model.yml
+  - type: Conformance
+    url: conformance/dmarket-conformance.yml
+- aid: dmarket:dmarket-sell-items-api
+  name: DMarket Sell Items API
+  description: Create, edit, delete and list your sell offers.
+  humanURL: https://docs.dmarket.com/v1/swagger.html
+  baseURL: https://api.dmarket.com
+  tags:
+  - Sell Items
+  properties:
+  - type: OpenAPI
+    url: openapi/dmarket-sell-items-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dmarket.com/v1/swagger.html
+  - type: APIReference
+    url: https://docs.dmarket.com/v1/swagger.html
+  - type: Authentication
+    url: authentication/dmarket-authentication.yml
+  - type: Conventions
+    url: conventions/dmarket-conventions.yml
+  - type: ErrorCatalog
+    url: errors/dmarket-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/dmarket-lifecycle.yml
+  - type: DataModel
+    url: data-model/dmarket-data-model.yml
+  - type: Conformance
+    url: conformance/dmarket-conformance.yml
+- aid: dmarket:dmarket-sold-user-items-api
+  name: DMarket Sold user items API
+  description: History of your completed sales.
+  humanURL: https://docs.dmarket.com/v1/swagger.html
+  baseURL: https://api.dmarket.com
+  tags:
+  - Sold user items
+  properties:
+  - type: OpenAPI
+    url: openapi/dmarket-sold-user-items-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dmarket.com/v1/swagger.html
+  - type: APIReference
+    url: https://docs.dmarket.com/v1/swagger.html
+  - type: Authentication
+    url: authentication/dmarket-authentication.yml
+  - type: Conventions
+    url: conventions/dmarket-conventions.yml
+  - type: ErrorCatalog
+    url: errors/dmarket-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/dmarket-lifecycle.yml
+  - type: DataModel
+    url: data-model/dmarket-data-model.yml
+  - type: Conformance
+    url: conformance/dmarket-conformance.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/dmarket-domain-security.yml
+- type: Authentication
+  url: authentication/dmarket-authentication.yml
+- type: Packages
+  url: packages/dmarket-packages.yml
+- type: SDKs
+  url: packages/dmarket-packages.yml
+- type: MCPServer
+  url: mcp/dmarket-mcp.yml
+- type: LLMsTxt
+  url: llms/dmarket-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
 - type: Website
   url: https://dmarket.com/ingame-items/item-list/csgo-skins
+- type: DeveloperPortal
+  url: https://dmarket.com/trading-api
+- type: Documentation
+  url: https://docs.dmarket.com/v1/swagger.html
+- type: APIReference
+  url: https://docs.dmarket.com/v1/swagger.html
+- type: GettingStarted
+  url: https://dmarket.com/faq#tradingAPI
+- type: Support
+  url: https://dmarket.com/faq
+- type: Blog
+  url: https://dmarket.com/blog
+- type: GitHubOrganization
+  url: https://github.com/dmarket
+- type: Pricing
+  url: https://dmarket.com/pricing
+- type: SignUp
+  url: https://dmarket.com/sign-in
+- type: TermsOfService
+  url: https://dmarket.com/terms-of-use
+- type: PrivacyPolicy
+  url: https://dmarket.com/privacy-policy
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

@@ -1,0 +1,24 @@
+{
+  "provider": "dmarket",
+  "sources": [
+    "dmarket-account-api-openapi.yml",
+    "dmarket-aggregator-api-openapi.yml",
+    "dmarket-buy-items-api-openapi.yml",
+    "dmarket-inventory-items-api-openapi.yml",
+    "dmarket-sell-items-api-openapi.yml",
+    "dmarket-sold-user-items-api-openapi.yml"
+  ],
+  "outputs": [
+    "dmarket-account-api-openapi.yml",
+    "dmarket-aggregator-api-openapi.yml",
+    "dmarket-buy-items-api-openapi.yml",
+    "dmarket-inventory-items-api-openapi.yml",
+    "dmarket-sell-items-api-openapi.yml",
+    "dmarket-sold-user-items-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

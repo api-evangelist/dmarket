@@ -1,0 +1,42 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.dmarket.com/v1/swagger.html
+authentication:
+  style: signed-request
+  headers:
+  - X-Api-Key
+  - X-Sign-Date
+  - X-Request-Sign
+  signature: Ed25519 over method+path(+query)+body+X-Sign-Date, hex-encoded, prefixed `dmar ed25519 `
+  timestamp_window: X-Sign-Date must be within 2 minutes of server time
+  ref: authentication/dmarket-authentication.yml
+idempotency:
+  supported: false
+  notes: No idempotency-key header or parameter documented in the Trading API.
+pagination:
+  style: cursor
+  params:
+  - Cursor
+  - cursor
+  - Limit
+  - limit
+  - offset
+  notes: Cursor-based pagination on list endpoints (offers, inventory, targets); limit/offset on some
+    aggregator/list calls.
+  response_fields:
+  - cursor
+metadata:
+  notes: Item metadata carried on asset/offer objects (title, gameId, extra attributes).
+request_tracing:
+  header: null
+  notes: No documented request-id/trace header.
+versioning:
+  style: uri-path
+  ref: lifecycle/dmarket-lifecycle.yml
+error_envelope:
+  shape: '{code, message, validationDetails?}'
+  ref: errors/dmarket-problem-types.yml
+rate_limit_signaling:
+  notes: Trading API is rate limited; specific limits/headers not published in the spec.
+currency:
+  notes: Monetary amounts use entity.Money with USD cents (amount + currency).
