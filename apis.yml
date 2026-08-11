@@ -202,6 +202,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/dmarket-trading-overlay.yaml
 - type: DomainSecurity
   url: security/dmarket-domain-security.yml
 - type: Authentication
