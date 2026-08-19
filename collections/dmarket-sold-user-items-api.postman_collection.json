@@ -1,0 +1,327 @@
+{
+  "item": [
+    {
+      "id": "68c1d174-aa74-44c6-9421-62bd5c2164f5",
+      "name": "Sold user items",
+      "description": {
+        "content": "History of your completed sales.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "83ee924c-3b51-4be4-90ff-e11598b0a762",
+          "name": "List user closed offers",
+          "request": {
+            "name": "List user closed offers",
+            "description": {
+              "content": "Get the list of the user’s closed sell offers. The price amount format is in USD, i.e. 0.5 is 50 cents.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "marketplace-api",
+                "v1",
+                "user-offers",
+                "closed"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "Limit",
+                  "value": "<uint64>",
+                  "description": "Limits number of returned closed offers in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "OrderDir",
+                  "value": "desc"
+                },
+                {
+                  "disabled": false,
+                  "key": "OfferCreated.From",
+                  "value": "<int64>"
+                },
+                {
+                  "disabled": false,
+                  "key": "OfferCreated.To",
+                  "value": "<int64>"
+                },
+                {
+                  "disabled": false,
+                  "key": "OfferClosed.From",
+                  "value": "<int64>"
+                },
+                {
+                  "disabled": false,
+                  "key": "OfferClosed.To",
+                  "value": "<int64>"
+                },
+                {
+                  "disabled": false,
+                  "key": "Cursor",
+                  "value": "<string>",
+                  "description": "Cursor is next page identifier."
+                },
+                {
+                  "disabled": false,
+                  "key": "Finalization.From",
+                  "value": "<int64>"
+                },
+                {
+                  "disabled": false,
+                  "key": "Finalization.To",
+                  "value": "<int64>"
+                },
+                {
+                  "disabled": false,
+                  "key": "Status",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "Status",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a94382ec-5659-4b5e-8ca4-f9130c701646",
+              "name": "A successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "user-offers",
+                    "closed"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "Limit",
+                      "value": "<uint64>"
+                    },
+                    {
+                      "key": "OrderDir",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "OfferCreated.From",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "OfferCreated.To",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "OfferClosed.From",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "OfferClosed.To",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "Cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "Finalization.From",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "Finalization.To",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "Status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "Status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Trades\": [\n    {\n      \"OfferID\": \"string\",\n      \"TargetID\": \"string\",\n      \"AssetID\": \"string\",\n      \"Price\": {\n        \"Currency\": \"string\",\n        \"Amount\": 4506.610923126665\n      },\n      \"CurrencyCode\": \"string\",\n      \"Amount\": \"string\",\n      \"Title\": \"string\",\n      \"Fee\": {\n        \"Amount\": {\n          \"Currency\": \"string\",\n          \"Amount\": 244.60119092249766\n        },\n        \"Percent\": \"string\",\n        \"IsPersonal\": false\n      },\n      \"OfferCreatedAt\": \"string\",\n      \"OfferClosedAt\": \"string\",\n      \"Status\": \"successful\",\n      \"FinalizationTime\": \"string\"\n    },\n    {\n      \"OfferID\": \"string\",\n      \"TargetID\": \"string\",\n      \"AssetID\": \"string\",\n      \"Price\": {\n        \"Currency\": \"string\",\n        \"Amount\": 8081.178358713637\n      },\n      \"CurrencyCode\": \"string\",\n      \"Amount\": \"string\",\n      \"Title\": \"string\",\n      \"Fee\": {\n        \"Amount\": {\n          \"Currency\": \"string\",\n          \"Amount\": 1245.453133811516\n        },\n        \"Percent\": \"string\",\n        \"IsPersonal\": false\n      },\n      \"OfferCreatedAt\": \"string\",\n      \"OfferClosedAt\": \"string\",\n      \"Status\": \"successful\",\n      \"FinalizationTime\": \"string\"\n    }\n  ],\n  \"Total\": \"string\",\n  \"Cursor\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "44643625-2062-48a3-95d0-8239ef127db8",
+              "name": "An unexpected error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "user-offers",
+                    "closed"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "Limit",
+                      "value": "<uint64>"
+                    },
+                    {
+                      "key": "OrderDir",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "OfferCreated.From",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "OfferCreated.To",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "OfferClosed.From",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "OfferClosed.To",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "Cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "Finalization.From",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "Finalization.To",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "Status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "Status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 3747,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.dmarket.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-Api-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "a7e5bf16-0015-495e-bb8b-b61758345544",
+    "name": "DMarket trading Account Sold user items API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.\n\nRequest signature instructions\n\nA valid HTTP request to the trading API must include 3 request headers:\n\n1) X-Api-Key: public key (must be a hex string in lowercase)\nTo get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)\n\n2) X-Sign-Date: timestamp or current time\nExample: 1605619994. Must not be older than 2 minutes from the request time.\n\n3) X-Request-Sign: signature\n\nThe Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.\n\nTo make a signature, take the following steps:\n\n1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)\n\n2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> \"sign\" is Ed25519) using your secret key.\n3) Hex-encode the 64-byte Ed25519 signature\n4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)\n\nYou can check out examples on <https://github.com/dmarket/dm-trading-tools>.\n\nDMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.",
+      "type": "text/plain"
+    }
+  }
+}

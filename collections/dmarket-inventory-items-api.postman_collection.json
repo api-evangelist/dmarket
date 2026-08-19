@@ -1,0 +1,949 @@
+{
+  "item": [
+    {
+      "id": "43ce4e85-36b2-4f3f-913e-38d7522f35be",
+      "name": "Inventory/items",
+      "description": {
+        "content": "User inventory, deposits and withdrawals.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7f5e88bf-f91b-4282-9e12-35074cb57cc0",
+          "name": "List user inventory",
+          "request": {
+            "name": "List user inventory",
+            "description": {
+              "content": "Get user inventory details. Both 3rd party (e.g. Steam) and DMarket inventories are merged into one list. Prices are returned as integer cents. 'gameId' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "marketplace-api",
+                "v2",
+                "user",
+                "inventory"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "gameId",
+                  "value": "<string>",
+                  "description": "(Required) Game identifier. One of: a8db (CS2), 9a92 (Dota 2), tf2, rust."
+                },
+                {
+                  "disabled": false,
+                  "key": "title",
+                  "value": "<string>",
+                  "description": "Filter assets by title prefix (case-insensitive)."
+                },
+                {
+                  "disabled": false,
+                  "key": "treeFilters",
+                  "value": "<string>",
+                  "description": "Attribute filters in comma-separated key=value format. Values must match how the attribute is stored (typically the lowercase Steam string; see allowed values below).\n\nSupported common keys: `tradable`, `inMarket`, `categoryPath`, `type`. Filter by game and title via the top-level `gameId` and `title` query parameters.\n\nCS2 keys: `exterior`, `paintSeed`, `floatPart`, `phase`, `category`, `collection`, `charmName`, `charmExists`, `isProskin`, `fadePercentFrom`, `fadePercentTo`.\n\nTF2 keys: `exterior`, `collection`, `isCraftable`. Dota 2 keys: `hero`.\n\nAllowed CS2 values:\n- `exterior`: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `not painted`\n- `phase`: `phase-1`, `phase-2`, `phase-3`, `phase-4`, `ruby`, `sapphire`, `emerald`, `black-pearl`\n- `floatPart`: `FN-0`..`FN-6`, `MW-0`..`MW-4`, `FT-0`..`FT-4`, `WW-0`..`WW-4`, `BS-0`..`BS-4` (bucketed float ranges per exterior)\n- `category`: `stattrak_tm` (`_tm` is translated to the ™ symbol server-side), `souvenir`, `normal`, `★` (knives)\n\nAllowed TF2 exterior values: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `battle scarred`.\n\nMulti-value: suffix key with `[]`, e.g. `exterior[]=factory new,exterior[]=minimal wear` (URL-encode the space as `%20`).\n\nNegation: prefix key with `not_`, e.g. `not_exterior=factory new`.\n\nRanges: `fadePercentFrom=10,fadePercentTo=90`.\n\nExistence check: `charmExists=true` / `charmExists=false`.\n\nExample: `categoryPath=rifle,exterior[]=factory new,exterior[]=minimal wear`."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderBy",
+                  "value": "<string>",
+                  "description": "Sort field. Supported values: `price`, `title`, `float`, `createdAt`, `updatedAt`."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderDir",
+                  "value": "<string>",
+                  "description": "Sort direction. Defaults to `asc` when `orderBy` is set."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "(Required) Number of items to return per page. Range 1..100."
+                },
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "Pagination cursor returned from a previous response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a183e420-f6b6-4307-a5dd-7dc1359f7464",
+              "name": "A successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v2",
+                    "user",
+                    "inventory"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "gameId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "title",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "treeFilters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderDir",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"attributes\": {\n        \"key_0\": \"string\",\n        \"key_1\": true\n      },\n      \"suggestedPrice\": {\n        \"currency\": \"string\",\n        \"amount\": \"string\"\n      },\n      \"offerRecommendedPrice\": {\n        \"currency\": \"string\",\n        \"amount\": \"string\"\n      },\n      \"createdAt\": \"2017-12-14T20:20:08.097Z\",\n      \"updatedAt\": \"2003-07-11T02:02:37.623Z\",\n      \"inMarket\": true\n    },\n    {\n      \"attributes\": {\n        \"key_0\": 4811.124173507386,\n        \"key_1\": 1792\n      },\n      \"suggestedPrice\": {\n        \"currency\": \"string\",\n        \"amount\": \"string\"\n      },\n      \"offerRecommendedPrice\": {\n        \"currency\": \"string\",\n        \"amount\": \"string\"\n      },\n      \"createdAt\": \"2001-01-12T07:46:44.307Z\",\n      \"updatedAt\": \"1968-11-29T02:38:52.686Z\",\n      \"inMarket\": true\n    }\n  ],\n  \"total\": 5641,\n  \"cursor\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "304ed307-f2d9-4580-bceb-e0199020a191",
+              "name": "An unexpected error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v2",
+                    "user",
+                    "inventory"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "gameId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "title",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "treeFilters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderDir",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 2103,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a1a65b71-50ef-4053-a2ad-f94cf3be559c",
+          "name": "Sync inventory with Steam",
+          "request": {
+            "name": "Sync inventory with Steam",
+            "description": {
+              "content": "Updating DMarket inventory details to sync them with data from Steam.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "marketplace-api",
+                "v1",
+                "user-inventory",
+                "sync"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Type\": \"UnknownSyncType\",\n  \"GameID\": \"UnknownGame\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fbe46025-46d2-4f98-96f2-ce74674a9a96",
+              "name": "A successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "user-inventory",
+                    "sync"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Type\": \"Inventory\",\n  \"GameID\": \"CSGO\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "04c74b60-621c-4555-a5f3-30f5b26d2316",
+              "name": "An unexpected error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "user-inventory",
+                    "sync"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Type\": \"Inventory\",\n  \"GameID\": \"CSGO\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 2103,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a5cbaa9c-9caa-4bcc-9aa7-7b42cce811fa",
+          "name": "Withdraw assets",
+          "request": {
+            "name": "Withdraw assets",
+            "description": {
+              "content": "Withdraw assets. 'gameId' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "exchange",
+                "v1",
+                "withdraw-assets"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assets\": [\n    {\n      \"classId\": \"<string>\",\n      \"gameId\": \"<string>\",\n      \"id\": \"<string>\"\n    },\n    {\n      \"classId\": \"<string>\",\n      \"gameId\": \"<string>\",\n      \"id\": \"<string>\"\n    }\n  ],\n  \"requestId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4e2a9f3b-142b-4ef7-a45d-a391a680612a",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange",
+                    "v1",
+                    "withdraw-assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"assets\": [\n    {\n      \"id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n      \"gameId\": \"a8db\",\n      \"classId\": \"c7e8f9a0-1234-5678-9abc-def012345678\"\n    }\n  ],\n  \"requestId\": \"withdraw-001\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "394c70e2-91a8-40e8-9141-d74b10b4c223",
+              "name": "Bad body request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange",
+                    "v1",
+                    "withdraw-assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"assets\": [\n    {\n      \"id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n      \"gameId\": \"a8db\",\n      \"classId\": \"c7e8f9a0-1234-5678-9abc-def012345678\"\n    }\n  ],\n  \"requestId\": \"withdraw-001\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e768e0c8-2461-4231-8a67-e611774b112a",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange",
+                    "v1",
+                    "withdraw-assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"assets\": [\n    {\n      \"id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n      \"gameId\": \"a8db\",\n      \"classId\": \"c7e8f9a0-1234-5678-9abc-def012345678\"\n    }\n  ],\n  \"requestId\": \"withdraw-001\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8657d116-fbc3-467f-baae-3f43725d9e14",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange",
+                    "v1",
+                    "withdraw-assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"assets\": [\n    {\n      \"id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n      \"gameId\": \"a8db\",\n      \"classId\": \"c7e8f9a0-1234-5678-9abc-def012345678\"\n    }\n  ],\n  \"requestId\": \"withdraw-001\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transferId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a7be8c35-5e9c-4f50-a42b-1f5e6cafe328",
+          "name": "List low-fee items",
+          "request": {
+            "name": "List low-fee items",
+            "description": {
+              "content": "Get the list of items with lower fees. The new list of items every day. 'gameId' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust. 'offerType' param values are: 'dmarket', 'p2p'.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "exchange",
+                "v1",
+                "customized-fees"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "gameId",
+                  "value": "<string>",
+                  "description": "(Required) enums: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust"
+                },
+                {
+                  "disabled": false,
+                  "key": "offerType",
+                  "value": "dmarket",
+                  "description": "enums: \"dmarket\", \"p2p\""
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "limit"
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "offset"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "58f30eb5-9fc0-4565-812a-4e41219b8a62",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange",
+                    "v1",
+                    "customized-fees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "gameId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offerType",
+                      "value": "dmarket"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"defaultFee\": {\n    \"minAmount\": 6365,\n    \"fraction\": \"string\"\n  },\n  \"reducedFees\": [\n    {\n      \"title\": \"string\",\n      \"fraction\": \"string\",\n      \"minPrice\": 3987,\n      \"maxPrice\": 1822,\n      \"expiresAt\": 533\n    },\n    {\n      \"title\": \"string\",\n      \"fraction\": \"string\",\n      \"minPrice\": 6371,\n      \"maxPrice\": 6079,\n      \"expiresAt\": 4022\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2db279d6-aa71-4700-8b71-5b0fd478123c",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange",
+                    "v1",
+                    "customized-fees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "gameId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offerType",
+                      "value": "dmarket"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e328c6f1-29b2-45cb-8c7c-85344b99f8b4",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange",
+                    "v1",
+                    "customized-fees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "gameId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offerType",
+                      "value": "dmarket"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"defaultFee\": {\n    \"minAmount\": 8041,\n    \"fraction\": \"string\"\n  },\n  \"reducedFees\": [\n    {\n      \"title\": \"string\",\n      \"fraction\": \"string\",\n      \"minPrice\": 5543,\n      \"maxPrice\": 4203,\n      \"expiresAt\": 4651\n    },\n    {\n      \"title\": \"string\",\n      \"fraction\": \"string\",\n      \"minPrice\": 9105,\n      \"maxPrice\": 8166,\n      \"expiresAt\": 4285\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.dmarket.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-Api-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "f36ee678-3307-4b4d-af67-63cb916614be",
+    "name": "DMarket trading Account Inventory/items API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.\n\nRequest signature instructions\n\nA valid HTTP request to the trading API must include 3 request headers:\n\n1) X-Api-Key: public key (must be a hex string in lowercase)\nTo get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)\n\n2) X-Sign-Date: timestamp or current time\nExample: 1605619994. Must not be older than 2 minutes from the request time.\n\n3) X-Request-Sign: signature\n\nThe Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.\n\nTo make a signature, take the following steps:\n\n1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)\n\n2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> \"sign\" is Ed25519) using your secret key.\n3) Hex-encode the 64-byte Ed25519 signature\n4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)\n\nYou can check out examples on <https://github.com/dmarket/dm-trading-tools>.\n\nDMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.",
+      "type": "text/plain"
+    }
+  }
+}

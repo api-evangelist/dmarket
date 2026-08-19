@@ -1,0 +1,573 @@
+{
+  "item": [
+    {
+      "id": "b29f87e9-4110-42f3-9fcb-64cef121e2d5",
+      "name": "Account",
+      "description": {
+        "content": "User profile and balance.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b1502ca4-d1c9-45ed-86f1-591322191ab9",
+          "name": "Get user profile",
+          "request": {
+            "name": "Get user profile",
+            "description": {
+              "content": "Getting general user profile information.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "account",
+                "v1",
+                "user"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "793b0123-78c4-4b54-8f60-9b4326c851f8",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "v1",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"agreementsInfo\": {\n    \"isConfirmed\": true,\n    \"updated\": 7413\n  },\n  \"countryCode\": \"string\",\n  \"countryCodeFromIP\": \"string\",\n  \"email\": \"string\",\n  \"features\": [\n    {\n      \"enabled\": true,\n      \"name\": \"P2P\"\n    },\n    {\n      \"enabled\": false,\n      \"name\": \"P2PToggleVisible\"\n    }\n  ],\n  \"ga_client_id\": \"string\",\n  \"hasActiveSubscriptions\": true,\n  \"hasHistoryEvents\": false,\n  \"id\": \"string\",\n  \"imageUrl\": \"string\",\n  \"isEmailVerified\": true,\n  \"isPasswordSet\": false,\n  \"level\": 7373,\n  \"linkedGames\": [\n    {\n      \"gameId\": \"string\",\n      \"gameUserId\": \"string\",\n      \"username\": \"string\"\n    },\n    {\n      \"gameId\": \"string\",\n      \"gameUserId\": \"string\",\n      \"username\": \"string\"\n    }\n  ],\n  \"migrated\": false,\n  \"publicKey\": \"string\",\n  \"regType\": \"steam\",\n  \"restrictions\": [\n    {\n      \"expirationTime\": 2106,\n      \"name\": \"P2POfferCreation\"\n    },\n    {\n      \"expirationTime\": 5950,\n      \"name\": \"P2POfferCreation\"\n    }\n  ],\n  \"settings\": {\n    \"enabledDeviceConfirmation\": false,\n    \"isSubscribedToNewsletters\": false,\n    \"targetsLimit\": 3622,\n    \"tradingApiToken\": \"string\"\n  },\n  \"steamAccount\": {\n    \"apiKey\": \"string\",\n    \"apiKeyStatus\": \"New\",\n    \"icon\": \"string\",\n    \"isProfilePrivate\": false,\n    \"level\": 8411,\n    \"steamId\": \"string\",\n    \"tradeUrl\": \"string\",\n    \"username\": \"string\"\n  },\n  \"twitchAccount\": {\n    \"icon\": \"string\",\n    \"userId\": \"string\",\n    \"username\": \"string\"\n  },\n  \"username\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4ee03f69-e939-4ab5-9c07-6fc07fb085f5",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "v1",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"agreementsInfo\": {\n    \"isConfirmed\": false,\n    \"updated\": 8036\n  },\n  \"countryCode\": \"string\",\n  \"countryCodeFromIP\": \"string\",\n  \"email\": \"string\",\n  \"features\": [\n    {\n      \"enabled\": true,\n      \"name\": \"P2PToggleVisible\"\n    },\n    {\n      \"enabled\": false,\n      \"name\": \"P2P\"\n    }\n  ],\n  \"ga_client_id\": \"string\",\n  \"hasActiveSubscriptions\": false,\n  \"hasHistoryEvents\": false,\n  \"id\": \"string\",\n  \"imageUrl\": \"string\",\n  \"isEmailVerified\": true,\n  \"isPasswordSet\": false,\n  \"level\": 4466,\n  \"linkedGames\": [\n    {\n      \"gameId\": \"string\",\n      \"gameUserId\": \"string\",\n      \"username\": \"string\"\n    },\n    {\n      \"gameId\": \"string\",\n      \"gameUserId\": \"string\",\n      \"username\": \"string\"\n    }\n  ],\n  \"migrated\": true,\n  \"publicKey\": \"string\",\n  \"regType\": \"steam\",\n  \"restrictions\": [\n    {\n      \"expirationTime\": 4886,\n      \"name\": \"P2POfferCreation\"\n    },\n    {\n      \"expirationTime\": 3518,\n      \"name\": \"P2POfferCreation\"\n    }\n  ],\n  \"settings\": {\n    \"enabledDeviceConfirmation\": false,\n    \"isSubscribedToNewsletters\": true,\n    \"targetsLimit\": 2164,\n    \"tradingApiToken\": \"string\"\n  },\n  \"steamAccount\": {\n    \"apiKey\": \"string\",\n    \"apiKeyStatus\": \"Invalid\",\n    \"icon\": \"string\",\n    \"isProfilePrivate\": true,\n    \"level\": 6843,\n    \"steamId\": \"string\",\n    \"tradeUrl\": \"string\",\n    \"username\": \"string\"\n  },\n  \"twitchAccount\": {\n    \"icon\": \"string\",\n    \"userId\": \"string\",\n    \"username\": \"string\"\n  },\n  \"username\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fc49aa75-0df6-4bf5-8a9f-bf1afbdeb48e",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "v1",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"validationDetails\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0124339c-b82e-49dc-b98a-0f2643e71fc5",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "v1",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"validationDetails\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9ea42522-a6f5-4e4c-bff8-b53167f8a192",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "v1",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"agreementsInfo\": {\n    \"isConfirmed\": false,\n    \"updated\": 8036\n  },\n  \"countryCode\": \"string\",\n  \"countryCodeFromIP\": \"string\",\n  \"email\": \"string\",\n  \"features\": [\n    {\n      \"enabled\": true,\n      \"name\": \"P2PToggleVisible\"\n    },\n    {\n      \"enabled\": false,\n      \"name\": \"P2P\"\n    }\n  ],\n  \"ga_client_id\": \"string\",\n  \"hasActiveSubscriptions\": false,\n  \"hasHistoryEvents\": false,\n  \"id\": \"string\",\n  \"imageUrl\": \"string\",\n  \"isEmailVerified\": true,\n  \"isPasswordSet\": false,\n  \"level\": 4466,\n  \"linkedGames\": [\n    {\n      \"gameId\": \"string\",\n      \"gameUserId\": \"string\",\n      \"username\": \"string\"\n    },\n    {\n      \"gameId\": \"string\",\n      \"gameUserId\": \"string\",\n      \"username\": \"string\"\n    }\n  ],\n  \"migrated\": true,\n  \"publicKey\": \"string\",\n  \"regType\": \"steam\",\n  \"restrictions\": [\n    {\n      \"expirationTime\": 4886,\n      \"name\": \"P2POfferCreation\"\n    },\n    {\n      \"expirationTime\": 3518,\n      \"name\": \"P2POfferCreation\"\n    }\n  ],\n  \"settings\": {\n    \"enabledDeviceConfirmation\": false,\n    \"isSubscribedToNewsletters\": true,\n    \"targetsLimit\": 2164,\n    \"tradingApiToken\": \"string\"\n  },\n  \"steamAccount\": {\n    \"apiKey\": \"string\",\n    \"apiKeyStatus\": \"Invalid\",\n    \"icon\": \"string\",\n    \"isProfilePrivate\": true,\n    \"level\": 6843,\n    \"steamId\": \"string\",\n    \"tradeUrl\": \"string\",\n    \"username\": \"string\"\n  },\n  \"twitchAccount\": {\n    \"icon\": \"string\",\n    \"userId\": \"string\",\n    \"username\": \"string\"\n  },\n  \"username\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fc3821e0-2060-40db-8dcb-3a45296eb707",
+          "name": "Get account balance",
+          "request": {
+            "name": "Get account balance",
+            "description": {
+              "content": "Getting the current USD & DMC balance that is available for trading items / buying subscriptions. The response format is in coins (cents for USD, dimoshi for DMC).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "account",
+                "v1",
+                "balance"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3ce65eba-4ac8-470a-96d0-3b58fccd8a69",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "v1",
+                    "balance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"dmc\": \"string\",\n  \"dmcAvailableToWithdraw\": \"string\",\n  \"usd\": \"string\",\n  \"usdAvailableToWithdraw\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "30443079-4614-4f34-b4db-143555eddf45",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "v1",
+                    "balance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"validationDetails\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f85f6c87-de02-4cff-a38f-46bf764e0e5d",
+              "name": "Conflict",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "v1",
+                    "balance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"validationDetails\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "493f1338-bded-486a-8e6e-8ec7ff0575bd",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "v1",
+                    "balance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"validationDetails\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6ad2234f-6d81-46e7-986f-9d080d8fea3f",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "v1",
+                    "balance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"dmc\": \"string\",\n  \"dmcAvailableToWithdraw\": \"string\",\n  \"usd\": \"string\",\n  \"usdAvailableToWithdraw\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.dmarket.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-Api-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "2ebc4bd4-1502-4d77-964e-8aa50c8ba564",
+    "name": "DMarket trading Account API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.\n\nRequest signature instructions\n\nA valid HTTP request to the trading API must include 3 request headers:\n\n1) X-Api-Key: public key (must be a hex string in lowercase)\nTo get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)\n\n2) X-Sign-Date: timestamp or current time\nExample: 1605619994. Must not be older than 2 minutes from the request time.\n\n3) X-Request-Sign: signature\n\nThe Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.\n\nTo make a signature, take the following steps:\n\n1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)\n\n2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> \"sign\" is Ed25519) using your secret key.\n3) Hex-encode the 64-byte Ed25519 signature\n4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)\n\nYou can check out examples on <https://github.com/dmarket/dm-trading-tools>.\n\nDMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.",
+      "type": "text/plain"
+    }
+  }
+}

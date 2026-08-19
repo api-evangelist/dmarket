@@ -1,0 +1,1809 @@
+{
+  "item": [
+    {
+      "id": "bdf77358-ced1-40d1-9a60-fd9c995db7f7",
+      "name": "Buy items",
+      "description": {
+        "content": "Browse marketplace offers and buy orders (targets), and purchase items.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c382a2e1-c856-4eb7-ba99-df3319aa4518",
+          "name": "Find buy orders (targets) by item title",
+          "request": {
+            "name": "Find buy orders (targets) by item title",
+            "description": {
+              "content": "Returns aggregated buy orders (targets) for a specific game and item title. Use this endpoint to see current demand: how many buy orders exist and at what prices.\n\nPath parameters:\n- game_id: Game identifier (e.g., csgo, dota2, rust).\n- title: Exact in-game item title.\n\nResponse contains a list of orders with fields: amount (number of items requested), price (best price for that title and attributes), title, and attributes (quality/rarity/skin parameters, depending on the game).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "marketplace-api",
+                "v1",
+                "targets-by-title",
+                ":game_id",
+                ":title"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "game_id",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "title",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1554f0d1-98db-4012-aad5-7e27a6c217ab",
+              "name": "A successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "targets-by-title",
+                    ":game_id",
+                    ":title"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "game_id",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "title",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"orders\": [\n    {\n      \"amount\": \"string\",\n      \"price\": \"string\",\n      \"title\": \"string\",\n      \"attributes\": {}\n    },\n    {\n      \"amount\": \"string\",\n      \"price\": \"string\",\n      \"title\": \"string\",\n      \"attributes\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d1c887b8-5926-4aac-af58-007c013cc32e",
+              "name": "An unexpected error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "targets-by-title",
+                    ":game_id",
+                    ":title"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "game_id",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "title",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 1838,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "eae16964-f8d2-402f-8fa2-c6b6772346e9",
+          "name": "Get aggregated market prices for item titles",
+          "request": {
+            "name": "Get aggregated market prices for item titles",
+            "description": {
+              "content": "Returns aggregated pricing for specified item titles, including best buy (order) and best sell (offer) prices and the total number of orders/offers per title. Use this to quickly assess market depth and price levels.\n\nRequest body:\n- filter.game: Game identifier.\n- filter.titles[]: List of exact item titles to aggregate.\n- limit, cursor: Pagination controls.\n\nResponse:\n- aggregatedPrices[]: For each title: orderBestPrice, orderCount, offerBestPrice, offerCount.\n- nextCursor: Use to fetch the next page.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "marketplace-api",
+                "v1",
+                "aggregated-prices"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cursor\": \"<string>\",\n  \"limit\": \"<int64>\",\n  \"filter\": {\n    \"game\": \"<string>\",\n    \"titles\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "84a28542-4757-4f13-adab-a1a498cfd4d1",
+              "name": "A successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "aggregated-prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filter\": {\n    \"game\": \"a8db\",\n    \"titles\": [\n      \"AK-47 | Redline (Field-Tested)\"\n    ]\n  },\n  \"limit\": \"100\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"aggregatedPrices\": [\n    {\n      \"title\": \"string\",\n      \"orderBestPrice\": {\n        \"Currency\": \"string\",\n        \"Amount\": \"string\"\n      },\n      \"orderCount\": \"string\",\n      \"offerBestPrice\": {\n        \"Currency\": \"string\",\n        \"Amount\": \"string\"\n      },\n      \"offerCount\": \"string\"\n    },\n    {\n      \"title\": \"string\",\n      \"orderBestPrice\": {\n        \"Currency\": \"string\",\n        \"Amount\": \"string\"\n      },\n      \"orderCount\": \"string\",\n      \"offerBestPrice\": {\n        \"Currency\": \"string\",\n        \"Amount\": \"string\"\n      },\n      \"offerCount\": \"string\"\n    }\n  ],\n  \"nextCursor\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8a5fd4d2-ddeb-43b7-bcc8-38f85f956547",
+              "name": "An unexpected error response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "aggregated-prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filter\": {\n    \"game\": \"a8db\",\n    \"titles\": [\n      \"AK-47 | Redline (Field-Tested)\"\n    ]\n  },\n  \"limit\": \"100\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 1838,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "16b109f4-6f25-44ca-a1c9-c02b1b13f111",
+          "name": "List user targets",
+          "request": {
+            "name": "List user targets",
+            "description": {
+              "content": "Get the list of the current user's targets. Prices are returned as integer cents. 'gameId' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "marketplace-api",
+                "v2",
+                "user",
+                "targets"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "gameId",
+                  "value": "<string>",
+                  "description": "(Required) Game identifier. One of: a8db (CS2), 9a92 (Dota 2), tf2, rust."
+                },
+                {
+                  "disabled": false,
+                  "key": "title",
+                  "value": "<string>",
+                  "description": "Filter targets by title prefix (case-insensitive)."
+                },
+                {
+                  "disabled": false,
+                  "key": "treeFilters",
+                  "value": "<string>",
+                  "description": "Attribute filters in comma-separated key=value format. Values must match how the attribute is stored (typically the lowercase Steam string; see allowed values below).\n\nSupported common keys: `categoryPath`, `amount`, `status`. Filter by game, title, and price via the top-level `gameId`, `title`, and `priceFrom`/`priceTo` query parameters.\n\nCS2 keys: `category`, `exterior`, `floatPart`, `isAdvanced`, `paintSeed`, `phase`.\n\nAllowed CS2 values:\n- `exterior`: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `not painted`\n- `phase`: `phase-1`, `phase-2`, `phase-3`, `phase-4`, `ruby`, `sapphire`, `emerald`, `black-pearl`\n- `floatPart`: `FN-0`..`FN-6`, `MW-0`..`MW-4`, `FT-0`..`FT-4`, `WW-0`..`WW-4`, `BS-0`..`BS-4` (bucketed float ranges per exterior)\n- `category`: `stattrak_tm` (`_tm` is translated to the ™ symbol server-side), `souvenir`, `normal`, `★` (knives)\n\nMulti-value: suffix key with `[]`, e.g. `exterior[]=factory new,exterior[]=minimal wear` (URL-encode the space as `%20`).\n\nNegation: prefix key with `not_`, e.g. `not_exterior=factory new`.\n\nExample: `categoryPath=rifle,exterior[]=factory new`."
+                },
+                {
+                  "disabled": false,
+                  "key": "priceFrom",
+                  "value": "<long>",
+                  "description": "Lower bound of the target price range in cents (inclusive)."
+                },
+                {
+                  "disabled": false,
+                  "key": "priceTo",
+                  "value": "<long>",
+                  "description": "Upper bound of the target price range in cents (inclusive)."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderBy",
+                  "value": "<string>",
+                  "description": "Sort field. Supported values: `price`, `title`, `createdAt`."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderDir",
+                  "value": "<string>",
+                  "description": "Sort direction. Defaults to `asc` when `orderBy` is set."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "(Required) Number of items to return per page. Range 1..100."
+                },
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "Pagination cursor returned from a previous response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5926e5fa-c5d5-47a7-8d5c-332954d1e3c5",
+              "name": "A successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v2",
+                    "user",
+                    "targets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "gameId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "title",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "treeFilters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "priceFrom",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "priceTo",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderDir",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"targetId\": \"string\",\n      \"title\": \"string\",\n      \"amount\": 1360,\n      \"status\": \"TARGET_STATUS_UNSPECIFIED\",\n      \"priceCents\": 7486,\n      \"attributes\": {\n        \"categoryPath\": \"string\",\n        \"image\": \"string\",\n        \"title\": \"string\",\n        \"name\": \"string\",\n        \"cs2\": {\n          \"category\": \"string\",\n          \"exterior\": \"string\",\n          \"phase\": \"string\",\n          \"paintSeed\": 7961,\n          \"floatPart\": \"string\",\n          \"isAdvanced\": true\n        }\n      },\n      \"createdAt\": \"1947-05-23T05:11:57.956Z\",\n      \"updatedAt\": \"1956-09-08T05:09:16.331Z\"\n    },\n    {\n      \"targetId\": \"string\",\n      \"title\": \"string\",\n      \"amount\": 3608,\n      \"status\": \"TARGET_STATUS_UNSPECIFIED\",\n      \"priceCents\": 9828,\n      \"attributes\": {\n        \"categoryPath\": \"string\",\n        \"image\": \"string\",\n        \"title\": \"string\",\n        \"name\": \"string\",\n        \"cs2\": {\n          \"category\": \"string\",\n          \"exterior\": \"string\",\n          \"phase\": \"string\",\n          \"paintSeed\": 4012,\n          \"floatPart\": \"string\",\n          \"isAdvanced\": true\n        }\n      },\n      \"createdAt\": \"1991-08-28T01:19:38.025Z\",\n      \"updatedAt\": \"2021-07-07T00:34:06.132Z\"\n    }\n  ],\n  \"total\": 5833,\n  \"cursor\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ad7a8448-8400-487a-8f5e-70705ac36194",
+              "name": "An unexpected error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v2",
+                    "user",
+                    "targets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "gameId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "title",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "treeFilters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "priceFrom",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "priceTo",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderDir",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 1838,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "08e3cca6-beff-4e5e-9a55-c468ec76ea4f",
+          "name": "List user closed targets",
+          "request": {
+            "name": "List user closed targets",
+            "description": {
+              "content": "Get the list of the user’s closed targets. The price amount format is in USD, i.e. 0.5 is 50 cents.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "marketplace-api",
+                "v1",
+                "user-targets",
+                "closed"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "Limit",
+                  "value": "<uint64>",
+                  "description": "Limits number of returned closed targets in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "OrderDir",
+                  "value": "desc"
+                },
+                {
+                  "disabled": false,
+                  "key": "TargetCreated.From",
+                  "value": "<int64>"
+                },
+                {
+                  "disabled": false,
+                  "key": "TargetCreated.To",
+                  "value": "<int64>"
+                },
+                {
+                  "disabled": false,
+                  "key": "TargetClosed.From",
+                  "value": "<int64>"
+                },
+                {
+                  "disabled": false,
+                  "key": "TargetClosed.To",
+                  "value": "<int64>"
+                },
+                {
+                  "disabled": false,
+                  "key": "Cursor",
+                  "value": "<string>",
+                  "description": "Cursor is next page identifier."
+                },
+                {
+                  "disabled": false,
+                  "key": "Finalization.From",
+                  "value": "<int64>"
+                },
+                {
+                  "disabled": false,
+                  "key": "Finalization.To",
+                  "value": "<int64>"
+                },
+                {
+                  "disabled": false,
+                  "key": "Status",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "Status",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6e68475d-c295-41ca-9879-0cb1910245f6",
+              "name": "A successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "user-targets",
+                    "closed"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "Limit",
+                      "value": "<uint64>"
+                    },
+                    {
+                      "key": "OrderDir",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "TargetCreated.From",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "TargetCreated.To",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "TargetClosed.From",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "TargetClosed.To",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "Cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "Finalization.From",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "Finalization.To",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "Status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "Status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Trades\": [\n    {\n      \"OfferID\": \"string\",\n      \"TargetID\": \"string\",\n      \"AssetID\": \"string\",\n      \"Price\": {\n        \"Currency\": \"string\",\n        \"Amount\": 4990.163869504988\n      },\n      \"CurrencyCode\": \"string\",\n      \"Amount\": \"string\",\n      \"Title\": \"string\",\n      \"ClosedAt\": \"string\",\n      \"Status\": \"successful\",\n      \"FinalizationTime\": \"string\"\n    },\n    {\n      \"OfferID\": \"string\",\n      \"TargetID\": \"string\",\n      \"AssetID\": \"string\",\n      \"Price\": {\n        \"Currency\": \"string\",\n        \"Amount\": 806.2991458178014\n      },\n      \"CurrencyCode\": \"string\",\n      \"Amount\": \"string\",\n      \"Title\": \"string\",\n      \"ClosedAt\": \"string\",\n      \"Status\": \"successful\",\n      \"FinalizationTime\": \"string\"\n    }\n  ],\n  \"Total\": \"string\",\n  \"Cursor\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9c93a945-41b8-4b30-a385-46a3ec69ffde",
+              "name": "An unexpected error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "user-targets",
+                    "closed"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "Limit",
+                      "value": "<uint64>"
+                    },
+                    {
+                      "key": "OrderDir",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "TargetCreated.From",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "TargetCreated.To",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "TargetClosed.From",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "TargetClosed.To",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "Cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "Finalization.From",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "Finalization.To",
+                      "value": "1730419200"
+                    },
+                    {
+                      "key": "Status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "Status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 1838,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "68833c8c-c6d6-47f2-922a-96e62fc00f4a",
+          "name": "Create targets",
+          "request": {
+            "name": "Create targets",
+            "description": {
+              "content": "The request for target creation requires the following fields: \"GameID\" param (values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust) and array of \"Targets\". The price amount format is in USD, i.e. 0.5 is 50 cents, \"Title\" - full item name.\nAlso, additional attributes (\"Attrs\" field in #/components/schemas/marketplaceCreateTargetRequest) for each item such as \"phase\", \"floatPartValue\" and \"paintSeed\" are available. You can check possible values of additional attributes here.\nLimitations: maximum \"Amount\" value is 100; maximum quantity of targets in one request is 100; maximum number of created targets for one game is individual for each user and can be different for each game. You can contact our customer support team to find out your Target's limit.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "marketplace-api",
+                "v1",
+                "user-targets",
+                "create"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"GameID\": \"<string>\",\n  \"Targets\": [\n    {\n      \"Amount\": \"<uint64>\",\n      \"Price\": {\n        \"Currency\": \"<string>\",\n        \"Amount\": \"<float>\"\n      },\n      \"Title\": \"<string>\",\n      \"Attrs\": {\n        \"paintSeed\": \"<integer>\",\n        \"phase\": \"<string>\",\n        \"floatPartValue\": \"<string>\"\n      }\n    },\n    {\n      \"Amount\": \"<uint64>\",\n      \"Price\": {\n        \"Currency\": \"<string>\",\n        \"Amount\": \"<float>\"\n      },\n      \"Title\": \"<string>\",\n      \"Attrs\": {\n        \"paintSeed\": \"<integer>\",\n        \"phase\": \"<string>\",\n        \"floatPartValue\": \"<string>\"\n      }\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9936cc0a-8ec6-4388-ad45-0dcbed5f21e8",
+              "name": "A successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "user-targets",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"GameID\": \"a8db\",\n  \"Targets\": [\n    {\n      \"Amount\": \"1\",\n      \"Price\": {\n        \"Currency\": \"USD\",\n        \"Amount\": 10.5\n      },\n      \"Title\": \"AK-47 | Redline (Field-Tested)\",\n      \"Attrs\": {\n        \"floatPartValue\": \"FT-0\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Result\": [\n    {\n      \"CreateTarget\": {\n        \"Amount\": \"<uint64>\",\n        \"Price\": {\n          \"Currency\": \"<string>\",\n          \"Amount\": \"<float>\"\n        },\n        \"Title\": \"<string>\",\n        \"Attrs\": {\n          \"paintSeed\": \"<integer>\",\n          \"phase\": \"<string>\",\n          \"floatPartValue\": \"<string>\"\n        }\n      },\n      \"TargetID\": \"string\",\n      \"Successful\": false,\n      \"Error\": {\n        \"Code\": \"Internal\",\n        \"Message\": \"string\"\n      }\n    },\n    {\n      \"CreateTarget\": {\n        \"Amount\": \"<uint64>\",\n        \"Price\": {\n          \"Currency\": \"<string>\",\n          \"Amount\": \"<float>\"\n        },\n        \"Title\": \"<string>\",\n        \"Attrs\": {\n          \"paintSeed\": \"<integer>\",\n          \"phase\": \"<string>\",\n          \"floatPartValue\": \"<string>\"\n        }\n      },\n      \"TargetID\": \"string\",\n      \"Successful\": false,\n      \"Error\": {\n        \"Code\": \"Internal\",\n        \"Message\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "15f0b74e-2f0e-4d39-b93c-844a91260c30",
+              "name": "An unexpected error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "user-targets",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"GameID\": \"a8db\",\n  \"Targets\": [\n    {\n      \"Amount\": \"1\",\n      \"Price\": {\n        \"Currency\": \"USD\",\n        \"Amount\": 10.5\n      },\n      \"Title\": \"AK-47 | Redline (Field-Tested)\",\n      \"Attrs\": {\n        \"floatPartValue\": \"FT-0\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 1838,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6dcaa5a5-db8c-40b2-85f5-4614e99a527f",
+          "name": "Remove targets",
+          "request": {
+            "name": "Remove targets",
+            "description": {
+              "content": "Remove targets.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "marketplace-api",
+                "v1",
+                "user-targets",
+                "delete"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Targets\": [\n    {\n      \"TargetID\": \"<string>\"\n    },\n    {\n      \"TargetID\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8ac53645-e404-4840-a93a-2fdfedb74d3a",
+              "name": "A successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "user-targets",
+                    "delete"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Targets\": [\n    {\n      \"TargetID\": \"d4e5f6a7-b8c9-0123-def0-456789012345\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Result\": [\n    {\n      \"DeleteTarget\": {\n        \"TargetID\": \"<string>\"\n      },\n      \"Successful\": false,\n      \"Error\": {\n        \"Code\": \"Internal\",\n        \"Message\": \"string\"\n      }\n    },\n    {\n      \"DeleteTarget\": {\n        \"TargetID\": \"<string>\"\n      },\n      \"Successful\": true,\n      \"Error\": {\n        \"Code\": \"Internal\",\n        \"Message\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b6179665-f9b9-4005-8e4a-463fd2c2ecd3",
+              "name": "An unexpected error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v1",
+                    "user-targets",
+                    "delete"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Targets\": [\n    {\n      \"TargetID\": \"d4e5f6a7-b8c9-0123-def0-456789012345\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 1838,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "99626ba9-284b-49a8-9b71-855243a7ce7a",
+          "name": "List marketplace offers",
+          "request": {
+            "name": "List marketplace offers",
+            "description": {
+              "content": "Get the list of offers currently available for purchase on the DMarket storefront. Prices are returned as integer cents. 'gameId' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "marketplace-api",
+                "v2",
+                "offers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "gameId",
+                  "value": "<string>",
+                  "description": "(Required) Game identifier. One of: a8db (CS2), 9a92 (Dota 2), tf2, rust."
+                },
+                {
+                  "disabled": false,
+                  "key": "title",
+                  "value": "<string>",
+                  "description": "Filter offers by title prefix (case-insensitive)."
+                },
+                {
+                  "disabled": false,
+                  "key": "treeFilters",
+                  "value": "<string>",
+                  "description": "Attribute filters in comma-separated key=value format. Values must match how the attribute is stored (typically the lowercase Steam string; see allowed values below).\n\nSupported common keys: `categoryPath`, `type`, `tradeLockFrom`, `tradeLockTo`. Filter by game, title, and price via the top-level `gameId`, `title`, and `priceFrom`/`priceTo` query parameters.\n\nCS2 keys: `exterior`, `paintSeed`, `floatPart`, `phase`, `category`, `collection`, `charmName`, `charmExists`, `sticker`, `isProskin`, `fadePercentFrom`, `fadePercentTo`.\n\nTF2 keys: `exterior`, `collection`, `isCraftable`. Dota 2 keys: `hero`.\n\nAllowed CS2 values:\n- `exterior`: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `not painted`\n- `phase`: `phase-1`, `phase-2`, `phase-3`, `phase-4`, `ruby`, `sapphire`, `emerald`, `black-pearl`\n- `floatPart`: `FN-0`..`FN-6`, `MW-0`..`MW-4`, `FT-0`..`FT-4`, `WW-0`..`WW-4`, `BS-0`..`BS-4` (bucketed float ranges per exterior)\n- `category`: `stattrak_tm` (`_tm` is translated to the ™ symbol server-side), `souvenir`, `normal`, `★` (knives)\n\nAllowed TF2 exterior values: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `battle scarred`.\n\nMulti-value: suffix key with `[]`, e.g. `exterior[]=factory new,exterior[]=minimal wear` (URL-encode the space as `%20`).\n\nNegation: prefix key with `not_`, e.g. `not_exterior=factory new`. Negation is not supported for `charmName`/`sticker`.\n\nRanges: `fadePercentFrom=10,fadePercentTo=90`. Steam trade-lock filtering uses `tradeLockFrom`/`tradeLockTo` (remaining lock in days; `tradeLockFrom` is inclusive, `tradeLockTo` is exclusive).\n\nExistence check: `charmExists=true` / `charmExists=false`.\n\nCharm and sticker filters (`charmName`, `sticker[]`, `charmExists`) apply to CS2 offers only.\n\nExample: `categoryPath=rifle,exterior[]=factory new,exterior[]=minimal wear`."
+                },
+                {
+                  "disabled": false,
+                  "key": "priceFrom",
+                  "value": "<long>",
+                  "description": "Lower bound of the offer price range in cents (inclusive)."
+                },
+                {
+                  "disabled": false,
+                  "key": "priceTo",
+                  "value": "<long>",
+                  "description": "Upper bound of the offer price range in cents (inclusive)."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderBy",
+                  "value": "<string>",
+                  "description": "Sort field. Supported values: `price`, `title`, `float`, `createdAt`."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderDir",
+                  "value": "<string>",
+                  "description": "Sort direction. Defaults to `asc` when `orderBy` is set."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "(Required) Number of items to return per page. Range 1..100."
+                },
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "Pagination cursor returned from a previous response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "96b4ecd3-80f8-450f-8a1c-0029c551e2c3",
+              "name": "A successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v2",
+                    "offers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "gameId",
+                      "value": "a8db"
+                    },
+                    {
+                      "key": "title",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "treeFilters",
+                      "value": "categoryPath=rifle,exterior[]=factory new"
+                    },
+                    {
+                      "key": "priceFrom",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "priceTo",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderDir",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"offerId\": \"f7c1b8e2-9a3d-4e6f-bb12-3a5c9d0e1f23\",\n      \"priceCents\": 1599,\n      \"createdAt\": \"2026-06-17T10:30:00Z\",\n      \"locked\": false,\n      \"attributes\": {\n        \"title\": \"AK-47 | Redline (Field-Tested)\",\n        \"gameId\": \"a8db\",\n        \"categoryPath\": \"rifle/ak-47\",\n        \"tradable\": true,\n        \"cs2Attributes\": {\n          \"exterior\": \"field-tested\",\n          \"floatValue\": 0.2356,\n          \"paintSeed\": 412\n        }\n      }\n    }\n  ],\n  \"total\": 128,\n  \"cursor\": \"eyJvZmZzZXQiOjEwfQ==\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8f7368df-5925-4a92-838f-1e195397a924",
+              "name": "An unexpected error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "marketplace-api",
+                    "v2",
+                    "offers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "gameId",
+                      "value": "a8db"
+                    },
+                    {
+                      "key": "title",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "treeFilters",
+                      "value": "categoryPath=rifle,exterior[]=factory new"
+                    },
+                    {
+                      "key": "priceFrom",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "priceTo",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderDir",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 1838,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c467d9f2-7c80-49cc-9473-fdb346c0e8ee",
+          "name": "Buy offers",
+          "request": {
+            "name": "Buy offers",
+            "description": {
+              "content": "Buy the selected offers from the market. As the result of the operation: the offer is removed, the items are transferred to the buyer, the purchase amount is transferred to the seller, the fee is transferred to DMarket. The price amount format is in coins (cents for USD).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "exchange",
+                "v1",
+                "offers-buy"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"offers\": [\n    {\n      \"offerId\": \"<string>\",\n      \"price\": {\n        \"amount\": \"<string>\",\n        \"currency\": \"<string>\"\n      },\n      \"type\": \"dmarket\"\n    },\n    {\n      \"offerId\": \"<string>\",\n      \"price\": {\n        \"amount\": \"<string>\",\n        \"currency\": \"<string>\"\n      },\n      \"type\": \"dmarket\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ce275d8d-0404-44c5-825a-eaf4c26205d5",
+              "name": "No content",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange",
+                    "v1",
+                    "offers-buy"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offers\": [\n    {\n      \"offerId\": \"c3d4e5f6-a7b8-9012-cdef-345678901234\",\n      \"price\": {\n        \"amount\": \"4999\",\n        \"currency\": \"USD\"\n      },\n      \"type\": \"dmarket\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"dmOffersFailReason\": {\n    \"code\": \"string\"\n  },\n  \"orderId\": \"string\",\n  \"status\": \"TxPending\",\n  \"txId\": \"string\",\n  \"dmOffersStatus\": {\n    \"key_0\": {\n      \"started\": true\n    }\n  },\n  \"p2pOffersStatus\": {\n    \"key_0\": {\n      \"started\": false\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "87dbcb52-127f-4a6c-82b6-390d50672378",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange",
+                    "v1",
+                    "offers-buy"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offers\": [\n    {\n      \"offerId\": \"c3d4e5f6-a7b8-9012-cdef-345678901234\",\n      \"price\": {\n        \"amount\": \"4999\",\n        \"currency\": \"USD\"\n      },\n      \"type\": \"dmarket\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2df2526c-fd32-470c-9aae-23bde12de873",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange",
+                    "v1",
+                    "offers-buy"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offers\": [\n    {\n      \"offerId\": \"c3d4e5f6-a7b8-9012-cdef-345678901234\",\n      \"price\": {\n        \"amount\": \"4999\",\n        \"currency\": \"USD\"\n      },\n      \"type\": \"dmarket\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "71870067-fa32-43a3-9cd0-2be882ef3897",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange",
+                    "v1",
+                    "offers-buy"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offers\": [\n    {\n      \"offerId\": \"c3d4e5f6-a7b8-9012-cdef-345678901234\",\n      \"price\": {\n        \"amount\": \"4999\",\n        \"currency\": \"USD\"\n      },\n      \"type\": \"dmarket\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d6840c2c-93cb-486c-b643-4610b2c936e2",
+              "name": "No content",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange",
+                    "v1",
+                    "offers-buy"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offers\": [\n    {\n      \"offerId\": \"c3d4e5f6-a7b8-9012-cdef-345678901234\",\n      \"price\": {\n        \"amount\": \"4999\",\n        \"currency\": \"USD\"\n      },\n      \"type\": \"dmarket\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"dmOffersFailReason\": {\n    \"code\": \"string\"\n  },\n  \"orderId\": \"string\",\n  \"status\": \"TxPending\",\n  \"txId\": \"string\",\n  \"dmOffersStatus\": {\n    \"key_0\": {\n      \"started\": true\n    }\n  },\n  \"p2pOffersStatus\": {\n    \"key_0\": {\n      \"started\": false\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.dmarket.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-Api-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "3025d2e5-4dec-47b0-8f1b-d1d592f82f4f",
+    "name": "DMarket trading Account Buy items API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.\n\nRequest signature instructions\n\nA valid HTTP request to the trading API must include 3 request headers:\n\n1) X-Api-Key: public key (must be a hex string in lowercase)\nTo get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)\n\n2) X-Sign-Date: timestamp or current time\nExample: 1605619994. Must not be older than 2 minutes from the request time.\n\n3) X-Request-Sign: signature\n\nThe Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.\n\nTo make a signature, take the following steps:\n\n1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)\n\n2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> \"sign\" is Ed25519) using your secret key.\n3) Hex-encode the 64-byte Ed25519 signature\n4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)\n\nYou can check out examples on <https://github.com/dmarket/dm-trading-tools>.\n\nDMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.",
+      "type": "text/plain"
+    }
+  }
+}

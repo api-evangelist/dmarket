@@ -1,0 +1,48 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DMarket trading Account API",
+    "version": "v2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-Api-Key",
+      "value": "{{X-Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Account",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get user profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dmarket.com/account/v1/user"
+          },
+          "docs": "Getting general user profile information."
+        },
+        {
+          "info": {
+            "name": "Get account balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dmarket.com/account/v1/balance"
+          },
+          "docs": "Getting the current USD & DMC balance that is available for trading items / buying subscriptions. The response format is in coins (cents for USD, dimoshi for DMC)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

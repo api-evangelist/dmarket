@@ -1,0 +1,308 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DMarket trading Account Buy items API",
+    "version": "v2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-Api-Key",
+      "value": "{{X-Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Buy items",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Find buy orders (targets) by item title",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dmarket.com/marketplace-api/v1/targets-by-title/:game_id/:title",
+            "params": [
+              {
+                "name": "game_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "title",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns aggregated buy orders (targets) for a specific game and item title. Use this endpoint to see current demand: how many buy orders exist and at what prices.\n\nPath parameters:\n- game_id: Game identifier (e.g., csgo, dota2, rust).\n- title: Exact in-game item title.\n\nResponse contains a list of orders with fields: amount (number of items requested), price (best price for that title and attributes), title, and attributes (quality/rarity/skin parameters, depending on the game)."
+        },
+        {
+          "info": {
+            "name": "Get aggregated market prices for item titles",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.dmarket.com/marketplace-api/v1/aggregated-prices",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns aggregated pricing for specified item titles, including best buy (order) and best sell (offer) prices and the total number of orders/offers per title. Use this to quickly assess market depth and price levels.\n\nRequest body:\n- filter.game: Game identifier.\n- filter.titles[]: List of exact item titles to aggregate.\n- limit, cursor: Pagination controls.\n\nResponse:\n- aggregatedPrices[]: For each title: orderBestPrice, orderCount, offerBestPrice, offerCount.\n- nextCursor: Use to fetch the nex"
+        },
+        {
+          "info": {
+            "name": "List user targets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dmarket.com/marketplace-api/v2/user/targets",
+            "params": [
+              {
+                "name": "gameId",
+                "value": "",
+                "type": "query",
+                "description": "Game identifier. One of: a8db (CS2), 9a92 (Dota 2), tf2, rust."
+              },
+              {
+                "name": "title",
+                "value": "",
+                "type": "query",
+                "description": "Filter targets by title prefix (case-insensitive)."
+              },
+              {
+                "name": "treeFilters",
+                "value": "",
+                "type": "query",
+                "description": "Attribute filters in comma-separated key=value format. Values must match how the attribute is stored (typically the lowercase Steam string; see allowed values below).\n\nSupported common keys: `categoryPath`, `amount`, `status`. Filter by game, title, and price via the top-level `gameId`, `title`, and `priceFrom`/`priceTo` query parameters.\n\nCS2 keys: `category`, `exterior`, `floatPart`, `isAdvanced`, `paintSeed`, `phase`.\n\nAllowed CS2 values:\n- `exterior`: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `not painted`\n- `phase`: `phase-1`, `phase-2`, `phase-3`, `phase-4`, `ruby`, `sapphire`, `emerald`, `black-pearl`\n- `floatPart`: `FN-0`..`FN-6`, `MW-0`..`MW-4`, `FT-0`..`FT-4`, `WW-0`..`WW-4`, `BS-0`..`BS-4` (bucketed float ranges per exterior)\n- `category`: `stattrak_tm` (`_tm` is translated to the ™ symbol server-side), `souvenir`, `normal`, `★` (knives)\n\nMulti-value: suffix key with `[]`, e.g. `exterior[]=factory new,exterior[]=minimal wear` (URL-encode the space as `%20`).\n\nNegation: prefix key with `not_`, e.g. `not_exterior=factory new`.\n\nExample: `categoryPath=rifle,exterior[]=factory new`."
+              },
+              {
+                "name": "priceFrom",
+                "value": "",
+                "type": "query",
+                "description": "Lower bound of the target price range in cents (inclusive)."
+              },
+              {
+                "name": "priceTo",
+                "value": "",
+                "type": "query",
+                "description": "Upper bound of the target price range in cents (inclusive)."
+              },
+              {
+                "name": "orderBy",
+                "value": "",
+                "type": "query",
+                "description": "Sort field. Supported values: `price`, `title`, `createdAt`."
+              },
+              {
+                "name": "orderDir",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction. Defaults to `asc` when `orderBy` is set."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of items to return per page. Range 1..100."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor returned from a previous response."
+              }
+            ]
+          },
+          "docs": "Get the list of the current user's targets. Prices are returned as integer cents. 'gameId' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust."
+        },
+        {
+          "info": {
+            "name": "List user closed targets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dmarket.com/marketplace-api/v1/user-targets/closed",
+            "params": [
+              {
+                "name": "Limit",
+                "value": "",
+                "type": "query",
+                "description": "Limits number of returned closed targets in response."
+              },
+              {
+                "name": "OrderDir",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "TargetCreated.From",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "TargetCreated.To",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "TargetClosed.From",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "TargetClosed.To",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor is next page identifier."
+              },
+              {
+                "name": "Finalization.From",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Finalization.To",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Status",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Get the list of the user’s closed targets. The price amount format is in USD, i.e. 0.5 is 50 cents."
+        },
+        {
+          "info": {
+            "name": "Create targets",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.dmarket.com/marketplace-api/v1/user-targets/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The request for target creation requires the following fields: \"GameID\" param (values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust) and array of \"Targets\". The price amount format is in USD, i.e. 0.5 is 50 cents, \"Title\" - full item name.\nAlso, additional attributes (\"Attrs\" field in #/components/schemas/marketplaceCreateTargetRequest) for each item such as \"phase\", \"floatPartValue\" and \"paintSeed\" are available. You can check possible values of additional attributes here.\n"
+        },
+        {
+          "info": {
+            "name": "Remove targets",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.dmarket.com/marketplace-api/v1/user-targets/delete",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Remove targets."
+        },
+        {
+          "info": {
+            "name": "List marketplace offers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dmarket.com/marketplace-api/v2/offers",
+            "params": [
+              {
+                "name": "gameId",
+                "value": "a8db",
+                "type": "query",
+                "description": "Game identifier. One of: a8db (CS2), 9a92 (Dota 2), tf2, rust."
+              },
+              {
+                "name": "title",
+                "value": "",
+                "type": "query",
+                "description": "Filter offers by title prefix (case-insensitive)."
+              },
+              {
+                "name": "treeFilters",
+                "value": "categoryPath=rifle,exterior[]=factory new",
+                "type": "query",
+                "description": "Attribute filters in comma-separated key=value format. Values must match how the attribute is stored (typically the lowercase Steam string; see allowed values below).\n\nSupported common keys: `categoryPath`, `type`, `tradeLockFrom`, `tradeLockTo`. Filter by game, title, and price via the top-level `gameId`, `title`, and `priceFrom`/`priceTo` query parameters.\n\nCS2 keys: `exterior`, `paintSeed`, `floatPart`, `phase`, `category`, `collection`, `charmName`, `charmExists`, `sticker`, `isProskin`, `fadePercentFrom`, `fadePercentTo`.\n\nTF2 keys: `exterior`, `collection`, `isCraftable`. Dota 2 keys: `hero`.\n\nAllowed CS2 values:\n- `exterior`: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `not painted`\n- `phase`: `phase-1`, `phase-2`, `phase-3`, `phase-4`, `ruby`, `sapphire`, `emerald`, `black-pearl`\n- `floatPart`: `FN-0`..`FN-6`, `MW-0`..`MW-4`, `FT-0`..`FT-4`, `WW-0`..`WW-4`, `BS-0`..`BS-4` (bucketed float ranges per exterior)\n- `category`: `stattrak_tm` (`_tm` is translated to the ™ symbol server-side), `souvenir`, `normal`, `★` (knives)\n\nAllowed TF2 exterior values: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `battle scarred`.\n\nMulti-value: suffix key with `[]`, e.g. `exterior[]=factory new,exterior[]=minimal wear` (URL-encode the space as `%20`).\n\nNegation: prefix key with `not_`, e.g. `not_exterior=factory new`. Negation is not supported for `charmName`/`sticker`.\n\nRanges: `fadePercentFrom=10,fadePercentTo=90`. Steam trade-lock filtering uses `tradeLockFrom`/`tradeLockTo` (remaining lock in days; `tradeLockFrom` is inclusive, `tradeLockTo` is exclusive).\n\nExistence check: `charmExists=true` / `charmExists=false`.\n\nCharm and sticker filters (`charmName`, `sticker[]`, `charmExists`) apply to CS2 offers only.\n\nExample: `categoryPath=rifle,exterior[]=factory new,exterior[]=minimal wear`."
+              },
+              {
+                "name": "priceFrom",
+                "value": "",
+                "type": "query",
+                "description": "Lower bound of the offer price range in cents (inclusive)."
+              },
+              {
+                "name": "priceTo",
+                "value": "",
+                "type": "query",
+                "description": "Upper bound of the offer price range in cents (inclusive)."
+              },
+              {
+                "name": "orderBy",
+                "value": "",
+                "type": "query",
+                "description": "Sort field. Supported values: `price`, `title`, `float`, `createdAt`."
+              },
+              {
+                "name": "orderDir",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction. Defaults to `asc` when `orderBy` is set."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of items to return per page. Range 1..100."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor returned from a previous response."
+              }
+            ]
+          },
+          "docs": "Get the list of offers currently available for purchase on the DMarket storefront. Prices are returned as integer cents. 'gameId' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust."
+        },
+        {
+          "info": {
+            "name": "Buy offers",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.dmarket.com/exchange/v1/offers-buy",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Buy the selected offers from the market. As the result of the operation: the offer is removed, the items are transferred to the buyer, the purchase amount is transferred to the seller, the fee is transferred to DMarket. The price amount format is in coins (cents for USD)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

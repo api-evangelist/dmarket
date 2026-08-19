@@ -1,0 +1,160 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DMarket trading Account Sell Items API",
+    "version": "v2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-Api-Key",
+      "value": "{{X-Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Sell Items",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Deposit assets",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.dmarket.com/marketplace-api/v1/deposit-assets",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Transferring items from a 3rd party inventory (e.g. a Steam game) to a Dmarket inventory."
+        },
+        {
+          "info": {
+            "name": "Get deposit status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dmarket.com/marketplace-api/v1/deposit-status/:DepositID",
+            "params": [
+              {
+                "name": "DepositID",
+                "value": "",
+                "type": "path",
+                "description": "Deposit operation unique identifier."
+              }
+            ]
+          },
+          "docs": "Get information about current deposit transfers."
+        },
+        {
+          "info": {
+            "name": "List user offers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dmarket.com/marketplace-api/v2/user/offers",
+            "params": [
+              {
+                "name": "gameId",
+                "value": "a8db",
+                "type": "query",
+                "description": "Game identifier. One of: a8db (CS2), 9a92 (Dota 2), tf2, rust."
+              },
+              {
+                "name": "title",
+                "value": "",
+                "type": "query",
+                "description": "Filter offers by title prefix (case-insensitive)."
+              },
+              {
+                "name": "treeFilters",
+                "value": "categoryPath=rifle,exterior[]=factory new",
+                "type": "query",
+                "description": "Attribute filters in comma-separated key=value format. Values must match how the attribute is stored (typically the lowercase Steam string; see allowed values below).\n\nSupported common keys: `categoryPath`, `type`, `priceCents`, `tradeLockFrom`, `tradeLockTo`. Filter by game and title via the top-level `gameId` and `title` query parameters.\n\nCS2 keys: `exterior`, `paintSeed`, `floatPart`, `phase`, `category`, `collection`, `charmName`, `charmExists`, `sticker`, `isProskin`, `fadePercentFrom`, `fadePercentTo`.\n\nTF2 keys: `exterior`, `collection`, `isCraftable`. Dota 2 keys: `hero`.\n\nAllowed CS2 values:\n- `exterior`: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `not painted`\n- `phase`: `phase-1`, `phase-2`, `phase-3`, `phase-4`, `ruby`, `sapphire`, `emerald`, `black-pearl`\n- `floatPart`: `FN-0`..`FN-6`, `MW-0`..`MW-4`, `FT-0`..`FT-4`, `WW-0`..`WW-4`, `BS-0`..`BS-4` (bucketed float ranges per exterior)\n- `category`: `stattrak_tm` (`_tm` is translated to the ™ symbol server-side), `souvenir`, `normal`, `★` (knives)\n\nAllowed TF2 exterior values: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `battle scarred`.\n\nMulti-value: suffix key with `[]`, e.g. `exterior[]=factory new,exterior[]=minimal wear` (URL-encode the space as `%20`).\n\nNegation: prefix key with `not_`, e.g. `not_exterior=factory new`. Negation is not supported for `charmName`/`sticker`.\n\nRanges: `fadePercentFrom=10,fadePercentTo=90`. Steam trade-lock filtering uses `tradeLockFrom`/`tradeLockTo` (remaining lock in days; `tradeLockFrom` is inclusive, `tradeLockTo` is exclusive).\n\nExistence check: `charmExists=true` / `charmExists=false`.\n\nCharm and sticker filters (`charmName`, `sticker[]`, `charmExists`) apply to CS2 offers only.\n\nExample: `categoryPath=rifle,exterior[]=factory new,exterior[]=minimal wear`."
+              },
+              {
+                "name": "orderBy",
+                "value": "",
+                "type": "query",
+                "description": "Sort field. Supported values: `price`, `title`, `float`, `createdAt`."
+              },
+              {
+                "name": "orderDir",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction. Defaults to `asc` when `orderBy` is set."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of items to return per page. Range 1..100."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor returned from a previous response."
+              }
+            ]
+          },
+          "docs": "Get the list of the current user's active sell offers for further management (edit price, remove from sale). Prices are returned as integer cents. 'gameId' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust."
+        },
+        {
+          "info": {
+            "name": "Batch create offers",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.dmarket.com/marketplace-api/v2/offers:batchCreate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create multiple offers in a single request."
+        },
+        {
+          "info": {
+            "name": "Batch update offers",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.dmarket.com/marketplace-api/v2/offers:batchUpdate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update multiple offers in a single request."
+        },
+        {
+          "info": {
+            "name": "Batch delete offers",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.dmarket.com/marketplace-api/v2/offers:batchDelete",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Delete multiple offers in a single request."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

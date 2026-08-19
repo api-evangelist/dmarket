@@ -65,3 +65,9 @@ tools:
 - name: Aggregator_GetLastSales
   description: Get item sales history
   source_operation: openapi/dmarket-trading-openapi.yml#Aggregator_GetLastSales
+deployment:
+  mode: none
+  verified: derived
+  tools: 19
+  checked: '2026-08-12'
+  source: catalog MCP census

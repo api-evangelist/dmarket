@@ -1,0 +1,91 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DMarket trading Account Sold user items API",
+    "version": "v2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-Api-Key",
+      "value": "{{X-Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Sold user items",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List user closed offers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dmarket.com/marketplace-api/v1/user-offers/closed",
+            "params": [
+              {
+                "name": "Limit",
+                "value": "",
+                "type": "query",
+                "description": "Limits number of returned closed offers in response."
+              },
+              {
+                "name": "OrderDir",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "OfferCreated.From",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "OfferCreated.To",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "OfferClosed.From",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "OfferClosed.To",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor is next page identifier."
+              },
+              {
+                "name": "Finalization.From",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Finalization.To",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Status",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Get the list of the user’s closed sell offers. The price amount format is in USD, i.e. 0.5 is 50 cents."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

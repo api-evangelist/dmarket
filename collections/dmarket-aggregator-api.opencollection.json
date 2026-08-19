@@ -1,0 +1,72 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DMarket trading Account Aggregator API",
+    "version": "v2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-Api-Key",
+      "value": "{{X-Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Aggregator",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get item sales history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dmarket.com/trade-aggregator/v1/last-sales",
+            "params": [
+              {
+                "name": "gameId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "title",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "filters",
+                "value": "",
+                "type": "query",
+                "description": "filters is a list of filters. For example: exterior[]=factory new,phase[]=phase-1,phase[]=phase-2,float[]=2,float[]=133."
+              },
+              {
+                "name": "txOperationType",
+                "value": "",
+                "type": "query",
+                "description": "tx_operation_type is a type of transaction to return. Values: \"\", \"Target\", \"Offer\"."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "limit is a maximum number of sales to return.\nmin: 1\nmax: 20"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Get the item sales history. Up to 12 last months."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

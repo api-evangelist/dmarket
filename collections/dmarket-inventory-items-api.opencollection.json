@@ -1,0 +1,148 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DMarket trading Account Inventory/items API",
+    "version": "v2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-Api-Key",
+      "value": "{{X-Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Inventory/items",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List user inventory",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dmarket.com/marketplace-api/v2/user/inventory",
+            "params": [
+              {
+                "name": "gameId",
+                "value": "",
+                "type": "query",
+                "description": "Game identifier. One of: a8db (CS2), 9a92 (Dota 2), tf2, rust."
+              },
+              {
+                "name": "title",
+                "value": "",
+                "type": "query",
+                "description": "Filter assets by title prefix (case-insensitive)."
+              },
+              {
+                "name": "treeFilters",
+                "value": "",
+                "type": "query",
+                "description": "Attribute filters in comma-separated key=value format. Values must match how the attribute is stored (typically the lowercase Steam string; see allowed values below).\n\nSupported common keys: `tradable`, `inMarket`, `categoryPath`, `type`. Filter by game and title via the top-level `gameId` and `title` query parameters.\n\nCS2 keys: `exterior`, `paintSeed`, `floatPart`, `phase`, `category`, `collection`, `charmName`, `charmExists`, `isProskin`, `fadePercentFrom`, `fadePercentTo`.\n\nTF2 keys: `exterior`, `collection`, `isCraftable`. Dota 2 keys: `hero`.\n\nAllowed CS2 values:\n- `exterior`: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `not painted`\n- `phase`: `phase-1`, `phase-2`, `phase-3`, `phase-4`, `ruby`, `sapphire`, `emerald`, `black-pearl`\n- `floatPart`: `FN-0`..`FN-6`, `MW-0`..`MW-4`, `FT-0`..`FT-4`, `WW-0`..`WW-4`, `BS-0`..`BS-4` (bucketed float ranges per exterior)\n- `category`: `stattrak_tm` (`_tm` is translated to the ™ symbol server-side), `souvenir`, `normal`, `★` (knives)\n\nAllowed TF2 exterior values: `factory new`, `minimal wear`, `field-tested`, `well-worn`, `battle-scarred`, `battle scarred`.\n\nMulti-value: suffix key with `[]`, e.g. `exterior[]=factory new,exterior[]=minimal wear` (URL-encode the space as `%20`).\n\nNegation: prefix key with `not_`, e.g. `not_exterior=factory new`.\n\nRanges: `fadePercentFrom=10,fadePercentTo=90`.\n\nExistence check: `charmExists=true` / `charmExists=false`.\n\nExample: `categoryPath=rifle,exterior[]=factory new,exterior[]=minimal wear`."
+              },
+              {
+                "name": "orderBy",
+                "value": "",
+                "type": "query",
+                "description": "Sort field. Supported values: `price`, `title`, `float`, `createdAt`, `updatedAt`."
+              },
+              {
+                "name": "orderDir",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction. Defaults to `asc` when `orderBy` is set."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of items to return per page. Range 1..100."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor returned from a previous response."
+              }
+            ]
+          },
+          "docs": "Get user inventory details. Both 3rd party (e.g. Steam) and DMarket inventories are merged into one list. Prices are returned as integer cents. 'gameId' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust."
+        },
+        {
+          "info": {
+            "name": "Sync inventory with Steam",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.dmarket.com/marketplace-api/v1/user-inventory/sync",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updating DMarket inventory details to sync them with data from Steam."
+        },
+        {
+          "info": {
+            "name": "Withdraw assets",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.dmarket.com/exchange/v1/withdraw-assets",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Withdraw assets. 'gameId' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust"
+        },
+        {
+          "info": {
+            "name": "List low-fee items",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dmarket.com/exchange/v1/customized-fees",
+            "params": [
+              {
+                "name": "gameId",
+                "value": "",
+                "type": "query",
+                "description": "enums: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust"
+              },
+              {
+                "name": "offerType",
+                "value": "",
+                "type": "query",
+                "description": "enums: \"dmarket\", \"p2p\""
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "limit"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "offset"
+              }
+            ]
+          },
+          "docs": "Get the list of items with lower fees. The new list of items every day. 'gameId' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust. 'offerType' param values are: 'dmarket', 'p2p'."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
