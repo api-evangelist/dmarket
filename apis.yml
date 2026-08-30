@@ -136,7 +136,7 @@ apis:
   humanURL: https://docs.dmarket.com/v1/swagger.html
   baseURL: https://api.dmarket.com
   tags:
-  - Inventory Items
+  - Inventory/items
   tags_raw:
   - Inventory/items
   properties:
