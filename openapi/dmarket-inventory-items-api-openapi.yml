@@ -1,48 +1,7 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: DMarket trading Account Inventory/items API
-  description: 'Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.
-
-
-    Request signature instructions
-
-
-    A valid HTTP request to the trading API must include 3 request headers:
-
-
-    1) X-Api-Key: public key (must be a hex string in lowercase)
-
-    To get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)
-
-
-    2) X-Sign-Date: timestamp or current time
-
-    Example: 1605619994. Must not be older than 2 minutes from the request time.
-
-
-    3) X-Request-Sign: signature
-
-
-    The Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.
-
-
-    To make a signature, take the following steps:
-
-
-    1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)
-
-
-    2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> "sign" is Ed25519) using your secret key.
-
-    3) Hex-encode the 64-byte Ed25519 signature
-
-    4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)
-
-
-    You can check out examples on <https://github.com/dmarket/dm-trading-tools>.
-
-
-    DMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.'
+  title: DMarket trading Inventory/items API
+  description: Welcome to the DMarket Trading API section.
   version: v2.0.0
   x-logo:
     url: logo.svg
@@ -55,13 +14,13 @@ security:
   SignDate: []
   RequestSign: []
 tags:
-- name: Inventory/items
+- name: Inventory Items
   description: User inventory, deposits and withdrawals.
 paths:
   /marketplace-api/v2/user/inventory:
     get:
       tags:
-      - Inventory/items
+      - Inventory Items
       summary: List user inventory
       description: 'Get user inventory details. Both 3rd party (e.g. Steam) and DMarket inventories are merged into one list. Prices are returned as integer cents. ''gameId'' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust.'
       operationId: GetUserInventoryV2
@@ -190,7 +149,7 @@ paths:
   /marketplace-api/v1/user-inventory/sync:
     post:
       tags:
-      - Inventory/items
+      - Inventory Items
       summary: Sync inventory with Steam
       description: Updating DMarket inventory details to sync them with data from Steam.
       operationId: UserInventorySync
@@ -226,7 +185,7 @@ paths:
   /exchange/v1/withdraw-assets:
     post:
       tags:
-      - Inventory/items
+      - Inventory Items
       summary: Withdraw assets
       description: 'Withdraw assets. ''gameId'' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust'
       operationId: withdrawAssetsHandler
@@ -277,7 +236,7 @@ paths:
   /exchange/v1/customized-fees:
     get:
       tags:
-      - Inventory/items
+      - Inventory Items
       summary: List low-fee items
       description: 'Get the list of items with lower fees. The new list of items every day. ''gameId'' param values are: CS2 - a8db, Team Fortress 2 - tf2, Dota 2 - 9a92, Rust - rust. ''offerType'' param values are: ''dmarket'', ''p2p''.'
       operationId: getCustomizedItems
@@ -345,6 +304,69 @@ paths:
         source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"gameId\": \"a8db\",\n    \"offerType\": \"dmarket\",\n    \"limit\": 20,\n    \"offset\": 0\n}\nresult, err = client.call(\"GET\", \"/exchange/v1/customized-fees\", payload=payload)\nprint(result)"
 components:
   schemas:
+    entity.ListDefaultFee:
+      required:
+      - minAmount
+      - fraction
+      properties:
+        fraction:
+          type: string
+        minAmount:
+          type: integer
+          format: int64
+    marketplaceInventorySyncType:
+      type: string
+      default: UnknownSyncType
+      enum:
+      - UnknownSyncType
+      - Inventory
+    marketplaceUserInventorySyncResponse:
+      type: object
+    marketplaceUserInventorySyncRequest:
+      type: object
+      properties:
+        Type:
+          $ref: '#/components/schemas/marketplaceInventorySyncType'
+        GameID:
+          $ref: '#/components/schemas/marketplaceGames'
+    entity.Asset:
+      required:
+      - classId
+      - gameId
+      - id
+      properties:
+        classId:
+          type: string
+        gameId:
+          type: string
+        id:
+          type: string
+    entity.WithdrawResponse:
+      required:
+      - transferId
+      properties:
+        transferId:
+          type: string
+    rest.ErrorRepresentation:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    entity.WithdrawAssetsRequest:
+      required:
+      - assets
+      - requestId
+      properties:
+        assets:
+          type: array
+          items:
+            $ref: '#/components/schemas/entity.Asset'
+        requestId:
+          type: string
     marketplacev2GetUserInventoryResponse:
       type: object
       properties:
@@ -360,113 +382,6 @@ components:
         cursor:
           type: string
           description: Cursor for the next page. Empty when there are no more pages.
-    marketplaceGames:
-      type: string
-      default: UnknownGame
-      enum:
-      - UnknownGame
-      - CSGO
-      - Dota2
-      - TF2
-      - LifeBeyond
-      - Rust
-    marketplacev2Asset:
-      type: object
-      description: User inventory asset with typed attributes.
-      properties:
-        attributes:
-          description: Game-specific asset attributes. See `asset.Attributes` in the marketplace-api proto schema for the full oneof definition.
-          type: object
-          additionalProperties: true
-        suggestedPrice:
-          $ref: '#/components/schemas/typeCommonMoney'
-        offerRecommendedPrice:
-          $ref: '#/components/schemas/typeCommonMoney'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        inMarket:
-          type: boolean
-          description: True if the asset is held on DMarket; false if still in the user's Steam inventory.
-    marketplaceInventorySyncType:
-      type: string
-      default: UnknownSyncType
-      enum:
-      - UnknownSyncType
-      - Inventory
-    entity.ListFeeResponse:
-      required:
-      - defaultFee
-      - reducedFees
-      properties:
-        defaultFee:
-          $ref: '#/components/schemas/entity.ListDefaultFee'
-        reducedFees:
-          type: array
-          items:
-            $ref: '#/components/schemas/entity.ListPersonalFee'
-    entity.ListDefaultFee:
-      required:
-      - minAmount
-      - fraction
-      properties:
-        fraction:
-          type: string
-        minAmount:
-          type: integer
-          format: int64
-    entity.WithdrawAssetsRequest:
-      required:
-      - assets
-      - requestId
-      properties:
-        assets:
-          type: array
-          items:
-            $ref: '#/components/schemas/entity.Asset'
-        requestId:
-          type: string
-    entity.Asset:
-      required:
-      - classId
-      - gameId
-      - id
-      properties:
-        classId:
-          type: string
-        gameId:
-          type: string
-        id:
-          type: string
-    rest.ErrorRepresentation:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-    marketplaceUserInventorySyncRequest:
-      type: object
-      properties:
-        Type:
-          $ref: '#/components/schemas/marketplaceInventorySyncType'
-        GameID:
-          $ref: '#/components/schemas/marketplaceGames'
-    typeCommonMoney:
-      type: object
-      description: Monetary amount. `amount` is a decimal string (e.g. `"1.50"`).
-      properties:
-        currency:
-          type: string
-          description: ISO 4217 currency code (e.g. `USD`).
-        amount:
-          type: string
-          description: Decimal amount as a string.
     entity.ListPersonalFee:
       required:
       - title
@@ -488,14 +403,58 @@ components:
           format: int64
         title:
           type: string
-    marketplaceUserInventorySyncResponse:
+    marketplacev2Asset:
       type: object
-    entity.WithdrawResponse:
-      required:
-      - transferId
+      description: User inventory asset with typed attributes.
       properties:
-        transferId:
+        attributes:
+          description: Game-specific asset attributes. See `asset.Attributes` in the marketplace-api proto schema for the full oneof definition.
+          type: object
+          additionalProperties: true
+        suggestedPrice:
+          $ref: '#/components/schemas/typeCommonMoney'
+        offerRecommendedPrice:
+          $ref: '#/components/schemas/typeCommonMoney'
+        createdAt:
           type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        inMarket:
+          type: boolean
+          description: True if the asset is held on DMarket; false if still in the user's Steam inventory.
+    typeCommonMoney:
+      type: object
+      description: Monetary amount. `amount` is a decimal string (e.g. `"1.50"`).
+      properties:
+        currency:
+          type: string
+          description: ISO 4217 currency code (e.g. `USD`).
+        amount:
+          type: string
+          description: Decimal amount as a string.
+    entity.ListFeeResponse:
+      required:
+      - defaultFee
+      - reducedFees
+      properties:
+        defaultFee:
+          $ref: '#/components/schemas/entity.ListDefaultFee'
+        reducedFees:
+          type: array
+          items:
+            $ref: '#/components/schemas/entity.ListPersonalFee'
+    marketplaceGames:
+      type: string
+      default: UnknownGame
+      enum:
+      - UnknownGame
+      - CSGO
+      - Dota2
+      - TF2
+      - LifeBeyond
+      - Rust
     runtimeError:
       type: object
       properties:

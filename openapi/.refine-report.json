@@ -1,12 +1,7 @@
 {
   "provider": "dmarket",
   "sources": [
-    "dmarket-account-api-openapi.yml",
-    "dmarket-aggregator-api-openapi.yml",
-    "dmarket-buy-items-api-openapi.yml",
-    "dmarket-inventory-items-api-openapi.yml",
-    "dmarket-sell-items-api-openapi.yml",
-    "dmarket-sold-user-items-api-openapi.yml"
+    "_original/dmarket-trading-openapi.yml"
   ],
   "outputs": [
     "dmarket-account-api-openapi.yml",
@@ -19,6 +14,17 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "dmarket-trading-openapi.yml: upgraded openapi 3.0.4 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "dmarket-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "dmarket-aggregator-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "dmarket-buy-items-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "dmarket-inventory-items-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "dmarket-sell-items-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "dmarket-sold-user-items-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

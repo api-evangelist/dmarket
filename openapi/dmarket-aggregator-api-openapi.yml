@@ -1,48 +1,7 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: DMarket trading Account Aggregator API
-  description: 'Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.
-
-
-    Request signature instructions
-
-
-    A valid HTTP request to the trading API must include 3 request headers:
-
-
-    1) X-Api-Key: public key (must be a hex string in lowercase)
-
-    To get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)
-
-
-    2) X-Sign-Date: timestamp or current time
-
-    Example: 1605619994. Must not be older than 2 minutes from the request time.
-
-
-    3) X-Request-Sign: signature
-
-
-    The Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.
-
-
-    To make a signature, take the following steps:
-
-
-    1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)
-
-
-    2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> "sign" is Ed25519) using your secret key.
-
-    3) Hex-encode the 64-byte Ed25519 signature
-
-    4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)
-
-
-    You can check out examples on <https://github.com/dmarket/dm-trading-tools>.
-
-
-    DMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.'
+  title: DMarket trading Aggregator API
+  description: Welcome to the DMarket Trading API section.
   version: v2.0.0
   x-logo:
     url: logo.svg
@@ -128,6 +87,13 @@ paths:
         source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"gameId\": \"a8db\",\n    \"title\": \"AK-47 | Redline (Field-Tested)\",\n    \"limit\": 20\n}\nresult, err = client.call(\"GET\", \"/trade-aggregator/v1/last-sales\", payload=payload)\nprint(result)"
 components:
   schemas:
+    tradeGetLastSalesResponse:
+      type: object
+      properties:
+        sales:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetLastSalesResponseSale'
     rest.ErrorRepresentation:
       required:
       - code
@@ -155,13 +121,6 @@ components:
           type: object
         orderAttributes:
           type: object
-    tradeGetLastSalesResponse:
-      type: object
-      properties:
-        sales:
-          type: array
-          items:
-            $ref: '#/components/schemas/GetLastSalesResponseSale'
   securitySchemes:
     ApiKey:
       type: apiKey

@@ -1,48 +1,7 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
   title: DMarket trading Account API
-  description: 'Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.
-
-
-    Request signature instructions
-
-
-    A valid HTTP request to the trading API must include 3 request headers:
-
-
-    1) X-Api-Key: public key (must be a hex string in lowercase)
-
-    To get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)
-
-
-    2) X-Sign-Date: timestamp or current time
-
-    Example: 1605619994. Must not be older than 2 minutes from the request time.
-
-
-    3) X-Request-Sign: signature
-
-
-    The Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.
-
-
-    To make a signature, take the following steps:
-
-
-    1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)
-
-
-    2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> "sign" is Ed25519) using your secret key.
-
-    3) Hex-encode the 64-byte Ed25519 signature
-
-    4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)
-
-
-    You can check out examples on <https://github.com/dmarket/dm-trading-tools>.
-
-
-    DMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.'
+  description: Welcome to the DMarket Trading API section.
   version: v2.0.0
   x-logo:
     url: logo.svg
@@ -168,105 +127,6 @@ paths:
           print(result)'
 components:
   schemas:
-    representation.Feat:
-      required:
-      - enabled
-      - name
-      properties:
-        enabled:
-          type: boolean
-        name:
-          type: string
-          enum:
-          - P2P
-          - P2PToggleVisible
-          - P2POnboardingSeen
-    api.ErrorRepresentation.validationDetails: {}
-    representation.AgreementsInfo:
-      required:
-      - isConfirmed
-      - updated
-      properties:
-        isConfirmed:
-          type: boolean
-        updated:
-          type: integer
-          format: int64
-    representation.Restriction:
-      required:
-      - expirationTime
-      - name
-      properties:
-        expirationTime:
-          type: integer
-          format: int64
-        name:
-          type: string
-          enum:
-          - P2POfferCreation
-    representation.UserAccountSettingsResponse:
-      required:
-      - enabledDeviceConfirmation
-      - isSubscribedToNewsletters
-      - targetsLimit
-      - tradingApiToken
-      properties:
-        enabledDeviceConfirmation:
-          type: boolean
-        isSubscribedToNewsletters:
-          type: boolean
-        targetsLimit:
-          type: integer
-          format: int32
-        tradingApiToken:
-          type: string
-    representation.SteamAccount:
-      required:
-      - apiKey
-      - apiKeyStatus
-      - icon
-      - isProfilePrivate
-      - level
-      - steamId
-      - tradeUrl
-      - username
-      properties:
-        apiKey:
-          type: string
-        apiKeyStatus:
-          type: string
-          enum:
-          - New
-          - Verified
-          - Invalid
-        icon:
-          type: string
-        isProfilePrivate:
-          type: boolean
-        level:
-          type: integer
-          format: int64
-        steamId:
-          type: string
-        tradeUrl:
-          type: string
-        username:
-          type: string
-    representation.UserBalance:
-      required:
-      - dmc
-      - dmcAvailableToWithdraw
-      - usd
-      - usdAvailableToWithdraw
-      properties:
-        dmc:
-          type: string
-        dmcAvailableToWithdraw:
-          type: string
-        usd:
-          type: string
-        usdAvailableToWithdraw:
-          type: string
     representation.UserAccountResponse:
       required:
       - agreementsInfo
@@ -346,28 +206,20 @@ components:
           $ref: '#/components/schemas/representation.TwitchAccount'
         username:
           type: string
-    api.ErrorRepresentation:
+    representation.UserBalance:
       required:
-      - code
-      - message
+      - dmc
+      - dmcAvailableToWithdraw
+      - usd
+      - usdAvailableToWithdraw
       properties:
-        code:
+        dmc:
           type: string
-        message:
+        dmcAvailableToWithdraw:
           type: string
-        validationDetails:
-          $ref: '#/components/schemas/api.ErrorRepresentation.validationDetails'
-    representation.TwitchAccount:
-      required:
-      - icon
-      - userId
-      - username
-      properties:
-        icon:
+        usd:
           type: string
-        userId:
-          type: string
-        username:
+        usdAvailableToWithdraw:
           type: string
     representation.LinkedGame:
       required:
@@ -381,6 +233,113 @@ components:
           type: string
         username:
           type: string
+    representation.UserAccountSettingsResponse:
+      required:
+      - enabledDeviceConfirmation
+      - isSubscribedToNewsletters
+      - targetsLimit
+      - tradingApiToken
+      properties:
+        enabledDeviceConfirmation:
+          type: boolean
+        isSubscribedToNewsletters:
+          type: boolean
+        targetsLimit:
+          type: integer
+          format: int32
+        tradingApiToken:
+          type: string
+    api.ErrorRepresentation:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        validationDetails:
+          $ref: '#/components/schemas/api.ErrorRepresentation.validationDetails'
+    representation.SteamAccount:
+      required:
+      - apiKey
+      - apiKeyStatus
+      - icon
+      - isProfilePrivate
+      - level
+      - steamId
+      - tradeUrl
+      - username
+      properties:
+        apiKey:
+          type: string
+        apiKeyStatus:
+          type: string
+          enum:
+          - New
+          - Verified
+          - Invalid
+        icon:
+          type: string
+        isProfilePrivate:
+          type: boolean
+        level:
+          type: integer
+          format: int64
+        steamId:
+          type: string
+        tradeUrl:
+          type: string
+        username:
+          type: string
+    representation.Restriction:
+      required:
+      - expirationTime
+      - name
+      properties:
+        expirationTime:
+          type: integer
+          format: int64
+        name:
+          type: string
+          enum:
+          - P2POfferCreation
+    representation.Feat:
+      required:
+      - enabled
+      - name
+      properties:
+        enabled:
+          type: boolean
+        name:
+          type: string
+          enum:
+          - P2P
+          - P2PToggleVisible
+          - P2POnboardingSeen
+    representation.TwitchAccount:
+      required:
+      - icon
+      - userId
+      - username
+      properties:
+        icon:
+          type: string
+        userId:
+          type: string
+        username:
+          type: string
+    api.ErrorRepresentation.validationDetails: {}
+    representation.AgreementsInfo:
+      required:
+      - isConfirmed
+      - updated
+      properties:
+        isConfirmed:
+          type: boolean
+        updated:
+          type: integer
+          format: int64
   securitySchemes:
     ApiKey:
       type: apiKey

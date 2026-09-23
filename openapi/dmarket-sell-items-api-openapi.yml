@@ -1,48 +1,7 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: DMarket trading Account Sell Items API
-  description: 'Welcome to the DMarket Trading API section. Our JSON-based API enables you to manage your DMarket inventory through the methods featured below. In order to use the API, please generate your personal API keys in the account settings.
-
-
-    Request signature instructions
-
-
-    A valid HTTP request to the trading API must include 3 request headers:
-
-
-    1) X-Api-Key: public key (must be a hex string in lowercase)
-
-    To get you your own public key, use <https://dmarket.com/> (details : <https://dmarket.com/faq#tradingAPI>)
-
-
-    2) X-Sign-Date: timestamp or current time
-
-    Example: 1605619994. Must not be older than 2 minutes from the request time.
-
-
-    3) X-Request-Sign: signature
-
-
-    The Ed25519 signature scheme is used for signing requests and proving items’ origin and ownership through public-private key pairs. Private and public keys diversification is aimed to provide secure back-to-back communication and the ability to rotate keys in case of security breaches on any side of the integration.
-
-
-    To make a signature, take the following steps:
-
-
-    1) Build non-signed string formula (HTTP Method) + (Route path + HTTP query params) + (body string) + (timestamp) ). Example:  POST/get-item?Amount=%220.25%22&Limit=%22100%22&Offset=%22150%22&Order=%22desc%22&1605619994)
-
-
-    2) After you’ve created a non-signed string with a default concatenation method, sign it with Ed25519 (NaCl <https://en.wikipedia.org/wiki/NaCl_(software)> "sign" is Ed25519) using your secret key.
-
-    3) Hex-encode the 64-byte Ed25519 signature
-
-    4) Add your signature string to HTTP request headers X-Request-Sign (dmar ed25519 signature)
-
-
-    You can check out examples on <https://github.com/dmarket/dm-trading-tools>.
-
-
-    DMarket uses rate limiting to control the rate of API requests. Please read FAQ for details <https://dmarket.com/faq#startUsingTradingAPI>.'
+  title: DMarket trading Sell Items API
+  description: Welcome to the DMarket Trading API section.
   version: v2.0.0
   x-logo:
     url: logo.svg
@@ -326,6 +285,8 @@ paths:
       - lang: Python
         label: Python (dm-trading-tools)
         source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"requests\": [\n        {\n            \"assetId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n            \"priceCents\": 1599\n        }\n    ]\n}\nresult, err = client.call(\"POST\", \"/marketplace-api/v2/offers:batchCreate\", payload=payload)\nprint(result)"
+      operationId: postMarketplaceApiV2Offers:batchCreate
+      x-operation-id-source: derived
   /marketplace-api/v2/offers:batchUpdate:
     post:
       tags:
@@ -362,6 +323,8 @@ paths:
       - lang: Python
         label: Python (dm-trading-tools)
         source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"requests\": [\n        {\n            \"offerId\": \"c3d4e5f6-a7b8-9012-cdef-345678901234\",\n            \"priceCents\": 1799\n        }\n    ]\n}\nresult, err = client.call(\"POST\", \"/marketplace-api/v2/offers:batchUpdate\", payload=payload)\nprint(result)"
+      operationId: postMarketplaceApiV2Offers:batchUpdate
+      x-operation-id-source: derived
   /marketplace-api/v2/offers:batchDelete:
     post:
       tags:
@@ -397,21 +360,90 @@ paths:
       - lang: Python
         label: Python (dm-trading-tools)
         source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"requests\": [\n        {\n            \"offerId\": \"c3d4e5f6-a7b8-9012-cdef-345678901234\"\n        }\n    ]\n}\nresult, err = client.call(\"POST\", \"/marketplace-api/v2/offers:batchDelete\", payload=payload)\nprint(result)"
+      operationId: postMarketplaceApiV2Offers:batchDelete
+      x-operation-id-source: derived
 components:
   schemas:
-    marketplacev2CreateOfferRequest:
+    marketplaceDepositAssetsResponse:
       type: object
       properties:
-        assetId:
+        DepositID:
           type: string
-          format: uuid
-          description: Asset unique identifier.
-        priceCents:
+          description: Deposit operation unique identifier.
+    marketplaceAssetMap:
+      type: object
+      properties:
+        InGameAssetID:
+          type: string
+          description: In-game asset identifier.
+        DmarketAssetID:
+          type: string
+          description: In-market asset identifier.
+    marketplacev2BatchUpdateOffersRequest:
+      type: object
+      properties:
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplacev2UpdateOfferRequest'
+    marketplacev2BatchCreateOffersResponse:
+      type: object
+      properties:
+        offers:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplacev2Offer'
+        failed:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplacev2BatchCreateOffersResponseReason'
+    runtimeError:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    marketplacev2GetUserOffersResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          description: User offers.
+          items:
+            $ref: '#/components/schemas/marketplacev2OfferV2'
+        total:
           type: integer
           format: int64
-          description: Price in cents.
-      required:
-      - assetId
+          description: Total number of offers matching the filter criteria across all pages, independent of limit/cursor.
+        cursor:
+          type: string
+          description: Cursor for the next page. Empty when there are no more pages.
+    marketplacev2BatchCreateOffersRequest:
+      type: object
+      properties:
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplacev2CreateOfferRequest'
+    marketplacev2DeleteOfferRequest:
+      type: object
+      properties:
+        offerId:
+          type: string
+          description: Offer unique identifier.
+    marketplacev2BatchDeleteOffersResponseReason:
+      type: object
+      properties:
+        offerId:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
     marketplacev2BatchDeleteOffersResponse:
       type: object
       properties:
@@ -423,6 +455,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/marketplacev2BatchDeleteOffersResponseReason'
+    marketplacev2BatchCreateOffersResponseReason:
+      type: object
+      properties:
+        assetId:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
+    marketplacev2BatchDeleteOffersRequest:
+      type: object
+      properties:
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplacev2DeleteOfferRequest'
+    marketplaceTransferStatus:
+      type: string
+      default: TransferStatusPending
+      enum:
+      - TransferStatusPending
+      - TransferStatusCreated
+      - TransferStatusSuccess
+      - TransferStatusFailedToCreate
+      - TransferStatusError
+      - TransferStatusOnHold
+    marketplacev2BatchUpdateOffersResponseReason:
+      type: object
+      properties:
+        offerId:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
     marketplaceGetDepositStatusResponse:
       type: object
       properties:
@@ -448,6 +515,30 @@ components:
             $ref: '#/components/schemas/marketplaceAssetMap'
         SteamDepositInfo:
           $ref: '#/components/schemas/marketplaceSteamDepositInfo'
+    marketplacev2BatchUpdateOffersResponse:
+      type: object
+      properties:
+        offers:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplacev2Offer'
+        failed:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplacev2BatchUpdateOffersResponseReason'
+    marketplacev2CreateOfferRequest:
+      type: object
+      properties:
+        assetId:
+          type: string
+          format: uuid
+          description: Asset unique identifier.
+        priceCents:
+          type: integer
+          format: int64
+          description: Price in cents.
+      required:
+      - assetId
     marketplacev2OfferV2:
       type: object
       description: Marketplace offer with typed attributes.
@@ -469,6 +560,15 @@ components:
         offerId:
           type: string
           description: Offer unique identifier.
+    marketplaceSteamDepositInfo:
+      type: object
+      properties:
+        TradeOfferID:
+          type: string
+          description: Steam trade offer id.
+        Message:
+          type: string
+          description: Custom trade message.
     marketplacev2UpdateOfferRequest:
       type: object
       properties:
@@ -479,6 +579,13 @@ components:
           type: integer
           format: int64
           description: New price in cents.
+    marketplacev2Offer:
+      type: object
+      properties:
+        id:
+          type: string
+        assetId:
+          type: string
     marketplaceDepositAssetsRequest:
       type: object
       properties:
@@ -487,148 +594,6 @@ components:
           description: List of asset id to deposit.
           items:
             type: string
-    marketplacev2BatchDeleteOffersResponseReason:
-      type: object
-      properties:
-        offerId:
-          type: string
-        code:
-          type: string
-        message:
-          type: string
-    marketplacev2BatchUpdateOffersResponseReason:
-      type: object
-      properties:
-        offerId:
-          type: string
-        code:
-          type: string
-        message:
-          type: string
-    marketplacev2BatchUpdateOffersResponse:
-      type: object
-      properties:
-        offers:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2Offer'
-        failed:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2BatchUpdateOffersResponseReason'
-    marketplacev2Offer:
-      type: object
-      properties:
-        id:
-          type: string
-        assetId:
-          type: string
-    marketplaceTransferStatus:
-      type: string
-      default: TransferStatusPending
-      enum:
-      - TransferStatusPending
-      - TransferStatusCreated
-      - TransferStatusSuccess
-      - TransferStatusFailedToCreate
-      - TransferStatusError
-      - TransferStatusOnHold
-    marketplacev2DeleteOfferRequest:
-      type: object
-      properties:
-        offerId:
-          type: string
-          description: Offer unique identifier.
-    marketplacev2BatchDeleteOffersRequest:
-      type: object
-      properties:
-        requests:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2DeleteOfferRequest'
-    marketplacev2GetUserOffersResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          description: User offers.
-          items:
-            $ref: '#/components/schemas/marketplacev2OfferV2'
-        total:
-          type: integer
-          format: int64
-          description: Total number of offers matching the filter criteria across all pages, independent of limit/cursor.
-        cursor:
-          type: string
-          description: Cursor for the next page. Empty when there are no more pages.
-    marketplacev2BatchUpdateOffersRequest:
-      type: object
-      properties:
-        requests:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2UpdateOfferRequest'
-    marketplacev2BatchCreateOffersResponse:
-      type: object
-      properties:
-        offers:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2Offer'
-        failed:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2BatchCreateOffersResponseReason'
-    marketplaceSteamDepositInfo:
-      type: object
-      properties:
-        TradeOfferID:
-          type: string
-          description: Steam trade offer id.
-        Message:
-          type: string
-          description: Custom trade message.
-    marketplacev2BatchCreateOffersRequest:
-      type: object
-      properties:
-        requests:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2CreateOfferRequest'
-    marketplaceDepositAssetsResponse:
-      type: object
-      properties:
-        DepositID:
-          type: string
-          description: Deposit operation unique identifier.
-    marketplaceAssetMap:
-      type: object
-      properties:
-        InGameAssetID:
-          type: string
-          description: In-game asset identifier.
-        DmarketAssetID:
-          type: string
-          description: In-market asset identifier.
-    runtimeError:
-      type: object
-      properties:
-        error:
-          type: string
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-    marketplacev2BatchCreateOffersResponseReason:
-      type: object
-      properties:
-        assetId:
-          type: string
-        code:
-          type: string
-        message:
-          type: string
   securitySchemes:
     ApiKey:
       type: apiKey
