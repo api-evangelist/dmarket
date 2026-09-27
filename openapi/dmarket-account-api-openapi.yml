@@ -127,6 +127,102 @@ paths:
           print(result)'
 components:
   schemas:
+    representation.SteamAccount:
+      required:
+      - apiKey
+      - apiKeyStatus
+      - icon
+      - isProfilePrivate
+      - level
+      - steamId
+      - tradeUrl
+      - username
+      properties:
+        apiKey:
+          type: string
+        apiKeyStatus:
+          type: string
+          enum:
+          - New
+          - Verified
+          - Invalid
+        icon:
+          type: string
+        isProfilePrivate:
+          type: boolean
+        level:
+          type: integer
+          format: int64
+        steamId:
+          type: string
+        tradeUrl:
+          type: string
+        username:
+          type: string
+    representation.UserAccountSettingsResponse:
+      required:
+      - enabledDeviceConfirmation
+      - isSubscribedToNewsletters
+      - targetsLimit
+      - tradingApiToken
+      properties:
+        enabledDeviceConfirmation:
+          type: boolean
+        isSubscribedToNewsletters:
+          type: boolean
+        targetsLimit:
+          type: integer
+          format: int32
+        tradingApiToken:
+          type: string
+    representation.AgreementsInfo:
+      required:
+      - isConfirmed
+      - updated
+      properties:
+        isConfirmed:
+          type: boolean
+        updated:
+          type: integer
+          format: int64
+    representation.UserBalance:
+      required:
+      - dmc
+      - dmcAvailableToWithdraw
+      - usd
+      - usdAvailableToWithdraw
+      properties:
+        dmc:
+          type: string
+        dmcAvailableToWithdraw:
+          type: string
+        usd:
+          type: string
+        usdAvailableToWithdraw:
+          type: string
+    api.ErrorRepresentation:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        validationDetails:
+          $ref: '#/components/schemas/api.ErrorRepresentation.validationDetails'
+    representation.LinkedGame:
+      required:
+      - gameId
+      - gameUserId
+      - username
+      properties:
+        gameId:
+          type: string
+        gameUserId:
+          type: string
+        username:
+          type: string
     representation.UserAccountResponse:
       required:
       - agreementsInfo
@@ -206,89 +302,15 @@ components:
           $ref: '#/components/schemas/representation.TwitchAccount'
         username:
           type: string
-    representation.UserBalance:
+    representation.TwitchAccount:
       required:
-      - dmc
-      - dmcAvailableToWithdraw
-      - usd
-      - usdAvailableToWithdraw
-      properties:
-        dmc:
-          type: string
-        dmcAvailableToWithdraw:
-          type: string
-        usd:
-          type: string
-        usdAvailableToWithdraw:
-          type: string
-    representation.LinkedGame:
-      required:
-      - gameId
-      - gameUserId
-      - username
-      properties:
-        gameId:
-          type: string
-        gameUserId:
-          type: string
-        username:
-          type: string
-    representation.UserAccountSettingsResponse:
-      required:
-      - enabledDeviceConfirmation
-      - isSubscribedToNewsletters
-      - targetsLimit
-      - tradingApiToken
-      properties:
-        enabledDeviceConfirmation:
-          type: boolean
-        isSubscribedToNewsletters:
-          type: boolean
-        targetsLimit:
-          type: integer
-          format: int32
-        tradingApiToken:
-          type: string
-    api.ErrorRepresentation:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-        validationDetails:
-          $ref: '#/components/schemas/api.ErrorRepresentation.validationDetails'
-    representation.SteamAccount:
-      required:
-      - apiKey
-      - apiKeyStatus
       - icon
-      - isProfilePrivate
-      - level
-      - steamId
-      - tradeUrl
+      - userId
       - username
       properties:
-        apiKey:
-          type: string
-        apiKeyStatus:
-          type: string
-          enum:
-          - New
-          - Verified
-          - Invalid
         icon:
           type: string
-        isProfilePrivate:
-          type: boolean
-        level:
-          type: integer
-          format: int64
-        steamId:
-          type: string
-        tradeUrl:
+        userId:
           type: string
         username:
           type: string
@@ -317,29 +339,7 @@ components:
           - P2P
           - P2PToggleVisible
           - P2POnboardingSeen
-    representation.TwitchAccount:
-      required:
-      - icon
-      - userId
-      - username
-      properties:
-        icon:
-          type: string
-        userId:
-          type: string
-        username:
-          type: string
     api.ErrorRepresentation.validationDetails: {}
-    representation.AgreementsInfo:
-      required:
-      - isConfirmed
-      - updated
-      properties:
-        isConfirmed:
-          type: boolean
-        updated:
-          type: integer
-          format: int64
   securitySchemes:
     ApiKey:
       type: apiKey

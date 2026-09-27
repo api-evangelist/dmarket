@@ -122,6 +122,16 @@ paths:
         source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"Limit\": 10,\n    \"OrderDir\": \"desc\",\n    \"Status\": \"successful\"\n}\nresult, err = client.call(\"GET\", \"/marketplace-api/v1/user-offers/closed\", payload=payload)\nprint(result)"
 components:
   schemas:
+    TradeFeeData:
+      type: object
+      properties:
+        Amount:
+          $ref: '#/components/schemas/marketplaceMoney'
+        Percent:
+          type: string
+        IsPersonal:
+          type: boolean
+          format: boolean
     marketplaceGetUserClosedOffersResponse:
       type: object
       properties:
@@ -135,6 +145,16 @@ components:
         Cursor:
           type: string
           description: Cursor is a next page identifier.
+    runtimeError:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
     marketplaceTradeStatus:
       type: string
       enum:
@@ -142,26 +162,6 @@ components:
       - reverted
       - trade_protected
       default: successful
-    TradeFeeData:
-      type: object
-      properties:
-        Amount:
-          $ref: '#/components/schemas/marketplaceMoney'
-        Percent:
-          type: string
-        IsPersonal:
-          type: boolean
-          format: boolean
-    marketplaceMoney:
-      type: object
-      properties:
-        Currency:
-          type: string
-          description: Currency code.
-        Amount:
-          type: number
-          format: float
-          description: Money amount.
     marketplaceGetUserClosedOffersResponseTrade:
       type: object
       properties:
@@ -193,16 +193,16 @@ components:
         FinalizationTime:
           type: string
           format: int64
-    runtimeError:
+    marketplaceMoney:
       type: object
       properties:
-        error:
+        Currency:
           type: string
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+          description: Currency code.
+        Amount:
+          type: number
+          format: float
+          description: Money amount.
   securitySchemes:
     ApiKey:
       type: apiKey

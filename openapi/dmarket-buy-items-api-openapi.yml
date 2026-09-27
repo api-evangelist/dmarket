@@ -672,6 +672,20 @@ paths:
         source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"offers\": [\n        {\n            \"offerId\": \"c3d4e5f6-a7b8-9012-cdef-345678901234\",\n            \"price\": {\n                \"amount\": \"4999\",\n                \"currency\": \"USD\"\n            },\n            \"type\": \"dmarket\"\n        }\n    ]\n}\nresult, err = client.call(\"PATCH\", \"/exchange/v1/offers-buy\", payload=payload)\nprint(result)"
 components:
   schemas:
+    marketplacev2TargetAttributes:
+      type: object
+      description: Target attributes. `categoryPath`, `image`, `title`, `name` are shared across games; game-specific attributes are carried in the `cs2` field.
+      properties:
+        categoryPath:
+          type: string
+        image:
+          type: string
+        title:
+          type: string
+        name:
+          type: string
+        cs2:
+          $ref: '#/components/schemas/marketplacev2TargetAttributesCS2'
     GetUserClosedTargetsResponseTrade:
       type: object
       properties:
@@ -698,6 +712,31 @@ components:
         FinalizationTime:
           type: string
           format: int64
+    entity.Money:
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: string
+        currency:
+          type: string
+          enum:
+          - USD
+          - DMC
+    marketplaceGetTargetsByTitleResponse:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetTargetsByTitleResponseOrder'
+    .dmOffersFailReason:
+      required:
+      - code
+      properties:
+        code:
+          type: string
     marketplaceDeleteTargetResponse:
       type: object
       properties:
@@ -709,59 +748,30 @@ components:
           format: boolean
         Error:
           $ref: '#/components/schemas/marketplaceErrorDetails'
-    marketplacev2Target:
+    marketplacev2TargetAttributesCS2:
       type: object
-      description: User target with typed attributes.
       properties:
-        targetId:
+        category:
           type: string
-          description: Target unique identifier.
-        title:
+        exterior:
           type: string
-        amount:
+        phase:
+          type: string
+        paintSeed:
           type: integer
-          format: int64
-          description: Number of matching items requested under this target.
-        status:
-          $ref: '#/components/schemas/marketplacev2TargetStatus'
-        priceCents:
-          type: integer
-          format: int64
-          description: Target price in cents.
-        attributes:
-          $ref: '#/components/schemas/marketplacev2TargetAttributes'
-        createdAt:
+          format: int32
+        floatPart:
           type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    entity.OfferBuyResponse:
-      required:
-      - dmOffersFailReason
-      - orderId
-      - status
-      - txId
+        isAdvanced:
+          type: boolean
+    marketplaceListAggregatedPricesResponse:
+      type: object
       properties:
-        dmOffersFailReason:
-          $ref: '#/components/schemas/.dmOffersFailReason'
-        dmOffersStatus:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/entity.DMOffersStatus'
-        orderId:
-          type: string
-        p2pOffersStatus:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/entity.P2POffersStatus'
-        status:
-          type: string
-          enum:
-          - TxPending
-          - TxSuccess
-          - TxFailed
-        txId:
+        aggregatedPrices:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListAggregatedPricesResponseAggregatedPrice'
+        nextCursor:
           type: string
     marketplaceMoney:
       type: object
@@ -773,23 +783,209 @@ components:
           type: number
           format: float
           description: Money amount.
-    commonMoney:
+    marketplacev2OfferV2:
+      type: object
+      description: Marketplace offer with typed attributes.
+      properties:
+        attributes:
+          description: Game-specific asset attributes. See `asset.Attributes` in the marketplace-api proto schema for the full oneof definition.
+          type: object
+          additionalProperties: true
+        priceCents:
+          type: integer
+          format: int64
+          description: Offer price in cents.
+        createdAt:
+          type: string
+          format: date-time
+        locked:
+          type: boolean
+          description: Whether the offer is currently locked (for example, reserved by an in-flight trade) and so cannot be bought.
+        offerId:
+          type: string
+          description: Offer unique identifier.
+    rest.ErrorRepresentation:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    entity.DMOffersStatus:
+      required:
+      - started
+      properties:
+        started:
+          type: boolean
+    marketplaceListAggregatedPricesRequest:
       type: object
       properties:
-        Currency:
+        cursor:
           type: string
-          title: 3 letter currency code, USD
-        Amount:
+        limit:
           type: string
-          title: integer value in coins (cents for USD)
-    marketplaceDeleteTargetsRequest:
+          format: int64
+        filter:
+          $ref: '#/components/schemas/ListAggregatedPricesRequestFilter'
+    marketplaceCreateTargetsRequest:
       type: object
       properties:
+        GameID:
+          type: string
+          description: GameID of same assets in one single target entity.
         Targets:
           type: array
-          description: Targets list to delete.
+          description: List of targets to create.
           items:
-            $ref: '#/components/schemas/marketplaceDeleteTargetRequest'
+            $ref: '#/components/schemas/marketplaceCreateTargetRequest'
+    GetTargetsByTitleResponseOrder:
+      type: object
+      properties:
+        amount:
+          type: string
+          format: uint64
+        price:
+          type: string
+        title:
+          type: string
+        attributes:
+          type: object
+    marketplacev2TargetStatus:
+      type: string
+      description: "Target status.\n - TARGET_STATUS_ACTIVE: Target is currently active and can be matched with offers.\n - TARGET_STATUS_INACTIVE: Target is currently inactive."
+      default: TARGET_STATUS_UNSPECIFIED
+      enum:
+      - TARGET_STATUS_UNSPECIFIED
+      - TARGET_STATUS_ACTIVE
+      - TARGET_STATUS_INACTIVE
+    marketplaceGetUserClosedTargetsResponse:
+      type: object
+      properties:
+        Trades:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetUserClosedTargetsResponseTrade'
+        Total:
+          type: string
+          format: uint64
+        Cursor:
+          type: string
+          description: Cursor is a next page identifier.
+    runtimeError:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    marketplaceTradeStatus:
+      type: string
+      enum:
+      - successful
+      - reverted
+      - trade_protected
+      default: successful
+    ListAggregatedPricesResponseAggregatedPrice:
+      type: object
+      properties:
+        title:
+          type: string
+        orderBestPrice:
+          $ref: '#/components/schemas/commonMoney'
+        orderCount:
+          type: string
+          format: int64
+        offerBestPrice:
+          $ref: '#/components/schemas/commonMoney'
+        offerCount:
+          type: string
+          format: int64
+    entity.P2POffersStatus:
+      required:
+      - started
+      properties:
+        started:
+          type: boolean
+    marketplaceErrorDetails:
+      type: object
+      properties:
+        Code:
+          $ref: '#/components/schemas/marketplaceErrorCodes'
+        Message:
+          type: string
+          description: Human readable error message.
+    marketplaceDeleteTargetsResponse:
+      type: object
+      properties:
+        Result:
+          type: array
+          description: Results for each sent request.
+          items:
+            $ref: '#/components/schemas/marketplaceDeleteTargetResponse'
+    marketplacev2GetUserTargetsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          description: User targets.
+          items:
+            $ref: '#/components/schemas/marketplacev2Target'
+        total:
+          type: integer
+          format: int64
+          description: Total number of targets matching the filter criteria across all pages, independent of limit/cursor.
+        cursor:
+          type: string
+          description: Cursor for the next page. Empty when there are no more pages.
+    marketplaceCreateTargetResponse:
+      type: object
+      properties:
+        CreateTarget:
+          $ref: '#/components/schemas/marketplaceCreateTargetRequest'
+        TargetID:
+          type: string
+          description: Target identifier in case of successful create.
+        Successful:
+          type: boolean
+          description: True if operation was successful.
+          format: boolean
+        Error:
+          $ref: '#/components/schemas/marketplaceErrorDetails'
+    entity.OfferBuyRequest:
+      required:
+      - offers
+      properties:
+        offers:
+          type: array
+          items:
+            $ref: '#/components/schemas/entity.OfferPrice'
+    marketplaceDeleteTargetRequest:
+      type: object
+      properties:
+        TargetID:
+          type: string
+          description: Unique target identifier.
+    entity.OfferPrice:
+      required:
+      - offerId
+      - price
+      - type
+      properties:
+        offerId:
+          type: string
+        price:
+          $ref: '#/components/schemas/entity.Money'
+        type:
+          type: string
+          default: dmarket
+          enum:
+          - dmarket
+          - p2p
     marketplaceErrorCodes:
       type: string
       description: "http code 400(Bad Request):\n  * `NotEnoughBalance` - Not enough balance\n  * `InvalidAPIKey` - InvalidAPIKey\n"
@@ -862,92 +1058,6 @@ components:
       - InvalidSignature
       - InvalidAPIKey
       - APIKeyDisabled
-    runtimeError:
-      type: object
-      properties:
-        error:
-          type: string
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-    marketplaceGetUserClosedTargetsResponse:
-      type: object
-      properties:
-        Trades:
-          type: array
-          items:
-            $ref: '#/components/schemas/GetUserClosedTargetsResponseTrade'
-        Total:
-          type: string
-          format: uint64
-        Cursor:
-          type: string
-          description: Cursor is a next page identifier.
-    marketplacev2TargetAttributes:
-      type: object
-      description: Target attributes. `categoryPath`, `image`, `title`, `name` are shared across games; game-specific attributes are carried in the `cs2` field.
-      properties:
-        categoryPath:
-          type: string
-        image:
-          type: string
-        title:
-          type: string
-        name:
-          type: string
-        cs2:
-          $ref: '#/components/schemas/marketplacev2TargetAttributesCS2'
-    marketplaceGetTargetsByTitleResponse:
-      type: object
-      properties:
-        orders:
-          type: array
-          items:
-            $ref: '#/components/schemas/GetTargetsByTitleResponseOrder'
-    marketplacev2TargetStatus:
-      type: string
-      description: "Target status.\n - TARGET_STATUS_ACTIVE: Target is currently active and can be matched with offers.\n - TARGET_STATUS_INACTIVE: Target is currently inactive."
-      default: TARGET_STATUS_UNSPECIFIED
-      enum:
-      - TARGET_STATUS_UNSPECIFIED
-      - TARGET_STATUS_ACTIVE
-      - TARGET_STATUS_INACTIVE
-    entity.P2POffersStatus:
-      required:
-      - started
-      properties:
-        started:
-          type: boolean
-    entity.OfferPrice:
-      required:
-      - offerId
-      - price
-      - type
-      properties:
-        offerId:
-          type: string
-        price:
-          $ref: '#/components/schemas/entity.Money'
-        type:
-          type: string
-          default: dmarket
-          enum:
-          - dmarket
-          - p2p
-    GetTargetsByTitleResponseOrder:
-      type: object
-      properties:
-        amount:
-          type: string
-          format: uint64
-        price:
-          type: string
-        title:
-          type: string
-        attributes:
-          type: object
     marketplacev2GetMarketplaceOffersResponse:
       type: object
       properties:
@@ -963,43 +1073,15 @@ components:
         cursor:
           type: string
           description: Cursor for the next page. Empty when there are no more pages.
-    marketplaceDeleteTargetRequest:
+    commonMoney:
       type: object
       properties:
-        TargetID:
+        Currency:
           type: string
-          description: Unique target identifier.
-    marketplaceTradeStatus:
-      type: string
-      enum:
-      - successful
-      - reverted
-      - trade_protected
-      default: successful
-    marketplaceListAggregatedPricesRequest:
-      type: object
-      properties:
-        cursor:
+          title: 3 letter currency code, USD
+        Amount:
           type: string
-        limit:
-          type: string
-          format: int64
-        filter:
-          $ref: '#/components/schemas/ListAggregatedPricesRequestFilter'
-    marketplaceCreateTargetResponse:
-      type: object
-      properties:
-        CreateTarget:
-          $ref: '#/components/schemas/marketplaceCreateTargetRequest'
-        TargetID:
-          type: string
-          description: Target identifier in case of successful create.
-        Successful:
-          type: boolean
-          description: True if operation was successful.
-          format: boolean
-        Error:
-          $ref: '#/components/schemas/marketplaceErrorDetails'
+          title: integer value in coins (cents for USD)
     marketplaceCreateTargetRequest:
       type: object
       properties:
@@ -1070,60 +1152,33 @@ components:
               - BS-2
               - BS-3
               - BS-4
-    marketplaceListAggregatedPricesResponse:
+    marketplacev2Target:
       type: object
+      description: User target with typed attributes.
       properties:
-        aggregatedPrices:
-          type: array
-          items:
-            $ref: '#/components/schemas/ListAggregatedPricesResponseAggregatedPrice'
-        nextCursor:
+        targetId:
           type: string
-    rest.ErrorRepresentation:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-    ListAggregatedPricesResponseAggregatedPrice:
-      type: object
-      properties:
+          description: Target unique identifier.
         title:
           type: string
-        orderBestPrice:
-          $ref: '#/components/schemas/commonMoney'
-        orderCount:
-          type: string
-          format: int64
-        offerBestPrice:
-          $ref: '#/components/schemas/commonMoney'
-        offerCount:
-          type: string
-          format: int64
-    entity.DMOffersStatus:
-      required:
-      - started
-      properties:
-        started:
-          type: boolean
-    marketplacev2GetUserTargetsResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          description: User targets.
-          items:
-            $ref: '#/components/schemas/marketplacev2Target'
-        total:
+        amount:
           type: integer
           format: int64
-          description: Total number of targets matching the filter criteria across all pages, independent of limit/cursor.
-        cursor:
+          description: Number of matching items requested under this target.
+        status:
+          $ref: '#/components/schemas/marketplacev2TargetStatus'
+        priceCents:
+          type: integer
+          format: int64
+          description: Target price in cents.
+        attributes:
+          $ref: '#/components/schemas/marketplacev2TargetAttributes'
+        createdAt:
           type: string
-          description: Cursor for the next page. Empty when there are no more pages.
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     marketplaceCreateTargetsResponse:
       type: object
       properties:
@@ -1132,88 +1187,41 @@ components:
           description: Results for each sent request.
           items:
             $ref: '#/components/schemas/marketplaceCreateTargetResponse'
-    .dmOffersFailReason:
-      required:
-      - code
-      properties:
-        code:
-          type: string
-    marketplaceCreateTargetsRequest:
+    marketplaceDeleteTargetsRequest:
       type: object
       properties:
-        GameID:
-          type: string
-          description: GameID of same assets in one single target entity.
         Targets:
           type: array
-          description: List of targets to create.
+          description: Targets list to delete.
           items:
-            $ref: '#/components/schemas/marketplaceCreateTargetRequest'
-    marketplacev2TargetAttributesCS2:
-      type: object
-      properties:
-        category:
-          type: string
-        exterior:
-          type: string
-        phase:
-          type: string
-        paintSeed:
-          type: integer
-          format: int32
-        floatPart:
-          type: string
-        isAdvanced:
-          type: boolean
-    marketplacev2OfferV2:
-      type: object
-      description: Marketplace offer with typed attributes.
-      properties:
-        attributes:
-          description: Game-specific asset attributes. See `asset.Attributes` in the marketplace-api proto schema for the full oneof definition.
-          type: object
-          additionalProperties: true
-        priceCents:
-          type: integer
-          format: int64
-          description: Offer price in cents.
-        createdAt:
-          type: string
-          format: date-time
-        locked:
-          type: boolean
-          description: Whether the offer is currently locked (for example, reserved by an in-flight trade) and so cannot be bought.
-        offerId:
-          type: string
-          description: Offer unique identifier.
-    entity.Money:
+            $ref: '#/components/schemas/marketplaceDeleteTargetRequest'
+    entity.OfferBuyResponse:
       required:
-      - amount
-      - currency
+      - dmOffersFailReason
+      - orderId
+      - status
+      - txId
       properties:
-        amount:
+        dmOffersFailReason:
+          $ref: '#/components/schemas/.dmOffersFailReason'
+        dmOffersStatus:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/entity.DMOffersStatus'
+        orderId:
           type: string
-        currency:
+        p2pOffersStatus:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/entity.P2POffersStatus'
+        status:
           type: string
           enum:
-          - USD
-          - DMC
-    marketplaceErrorDetails:
-      type: object
-      properties:
-        Code:
-          $ref: '#/components/schemas/marketplaceErrorCodes'
-        Message:
+          - TxPending
+          - TxSuccess
+          - TxFailed
+        txId:
           type: string
-          description: Human readable error message.
-    entity.OfferBuyRequest:
-      required:
-      - offers
-      properties:
-        offers:
-          type: array
-          items:
-            $ref: '#/components/schemas/entity.OfferPrice'
     ListAggregatedPricesRequestFilter:
       type: object
       properties:
@@ -1223,14 +1231,6 @@ components:
           type: array
           items:
             type: string
-    marketplaceDeleteTargetsResponse:
-      type: object
-      properties:
-        Result:
-          type: array
-          description: Results for each sent request.
-          items:
-            $ref: '#/components/schemas/marketplaceDeleteTargetResponse'
   securitySchemes:
     ApiKey:
       type: apiKey

@@ -304,31 +304,66 @@ paths:
         source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"gameId\": \"a8db\",\n    \"offerType\": \"dmarket\",\n    \"limit\": 20,\n    \"offset\": 0\n}\nresult, err = client.call(\"GET\", \"/exchange/v1/customized-fees\", payload=payload)\nprint(result)"
 components:
   schemas:
-    entity.ListDefaultFee:
+    marketplaceGames:
+      type: string
+      default: UnknownGame
+      enum:
+      - UnknownGame
+      - CSGO
+      - Dota2
+      - TF2
+      - LifeBeyond
+      - Rust
+    entity.ListPersonalFee:
       required:
-      - minAmount
+      - title
       - fraction
+      - minPrice
+      - maxPrice
+      - expiresAt
       properties:
-        fraction:
-          type: string
-        minAmount:
+        expiresAt:
           type: integer
           format: int64
+        fraction:
+          type: string
+        maxPrice:
+          type: integer
+          format: int64
+        minPrice:
+          type: integer
+          format: int64
+        title:
+          type: string
+    marketplaceUserInventorySyncResponse:
+      type: object
     marketplaceInventorySyncType:
       type: string
       default: UnknownSyncType
       enum:
       - UnknownSyncType
       - Inventory
-    marketplaceUserInventorySyncResponse:
+    marketplacev2Asset:
       type: object
-    marketplaceUserInventorySyncRequest:
-      type: object
+      description: User inventory asset with typed attributes.
       properties:
-        Type:
-          $ref: '#/components/schemas/marketplaceInventorySyncType'
-        GameID:
-          $ref: '#/components/schemas/marketplaceGames'
+        attributes:
+          description: Game-specific asset attributes. See `asset.Attributes` in the marketplace-api proto schema for the full oneof definition.
+          type: object
+          additionalProperties: true
+        suggestedPrice:
+          $ref: '#/components/schemas/typeCommonMoney'
+        offerRecommendedPrice:
+          $ref: '#/components/schemas/typeCommonMoney'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        inMarket:
+          type: boolean
+          description: True if the asset is held on DMarket; false if still in the user's Steam inventory.
     entity.Asset:
       required:
       - classId
@@ -341,21 +376,53 @@ components:
           type: string
         id:
           type: string
+    runtimeError:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    typeCommonMoney:
+      type: object
+      description: Monetary amount. `amount` is a decimal string (e.g. `"1.50"`).
+      properties:
+        currency:
+          type: string
+          description: ISO 4217 currency code (e.g. `USD`).
+        amount:
+          type: string
+          description: Decimal amount as a string.
+    entity.ListFeeResponse:
+      required:
+      - defaultFee
+      - reducedFees
+      properties:
+        defaultFee:
+          $ref: '#/components/schemas/entity.ListDefaultFee'
+        reducedFees:
+          type: array
+          items:
+            $ref: '#/components/schemas/entity.ListPersonalFee'
     entity.WithdrawResponse:
       required:
       - transferId
       properties:
         transferId:
           type: string
-    rest.ErrorRepresentation:
+    entity.ListDefaultFee:
       required:
-      - code
-      - message
+      - minAmount
+      - fraction
       properties:
-        code:
+        fraction:
           type: string
-        message:
-          type: string
+        minAmount:
+          type: integer
+          format: int64
     entity.WithdrawAssetsRequest:
       required:
       - assets
@@ -382,89 +449,22 @@ components:
         cursor:
           type: string
           description: Cursor for the next page. Empty when there are no more pages.
-    entity.ListPersonalFee:
+    rest.ErrorRepresentation:
       required:
-      - title
-      - fraction
-      - minPrice
-      - maxPrice
-      - expiresAt
+      - code
+      - message
       properties:
-        expiresAt:
-          type: integer
-          format: int64
-        fraction:
-          type: string
-        maxPrice:
-          type: integer
-          format: int64
-        minPrice:
-          type: integer
-          format: int64
-        title:
-          type: string
-    marketplacev2Asset:
-      type: object
-      description: User inventory asset with typed attributes.
-      properties:
-        attributes:
-          description: Game-specific asset attributes. See `asset.Attributes` in the marketplace-api proto schema for the full oneof definition.
-          type: object
-          additionalProperties: true
-        suggestedPrice:
-          $ref: '#/components/schemas/typeCommonMoney'
-        offerRecommendedPrice:
-          $ref: '#/components/schemas/typeCommonMoney'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        inMarket:
-          type: boolean
-          description: True if the asset is held on DMarket; false if still in the user's Steam inventory.
-    typeCommonMoney:
-      type: object
-      description: Monetary amount. `amount` is a decimal string (e.g. `"1.50"`).
-      properties:
-        currency:
-          type: string
-          description: ISO 4217 currency code (e.g. `USD`).
-        amount:
-          type: string
-          description: Decimal amount as a string.
-    entity.ListFeeResponse:
-      required:
-      - defaultFee
-      - reducedFees
-      properties:
-        defaultFee:
-          $ref: '#/components/schemas/entity.ListDefaultFee'
-        reducedFees:
-          type: array
-          items:
-            $ref: '#/components/schemas/entity.ListPersonalFee'
-    marketplaceGames:
-      type: string
-      default: UnknownGame
-      enum:
-      - UnknownGame
-      - CSGO
-      - Dota2
-      - TF2
-      - LifeBeyond
-      - Rust
-    runtimeError:
-      type: object
-      properties:
-        error:
-          type: string
         code:
-          type: integer
-          format: int32
+          type: string
         message:
           type: string
+    marketplaceUserInventorySyncRequest:
+      type: object
+      properties:
+        Type:
+          $ref: '#/components/schemas/marketplaceInventorySyncType'
+        GameID:
+          $ref: '#/components/schemas/marketplaceGames'
   securitySchemes:
     ApiKey:
       type: apiKey
