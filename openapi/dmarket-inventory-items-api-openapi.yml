@@ -304,16 +304,6 @@ paths:
         source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"gameId\": \"a8db\",\n    \"offerType\": \"dmarket\",\n    \"limit\": 20,\n    \"offset\": 0\n}\nresult, err = client.call(\"GET\", \"/exchange/v1/customized-fees\", payload=payload)\nprint(result)"
 components:
   schemas:
-    marketplaceGames:
-      type: string
-      default: UnknownGame
-      enum:
-      - UnknownGame
-      - CSGO
-      - Dota2
-      - TF2
-      - LifeBeyond
-      - Rust
     entity.ListPersonalFee:
       required:
       - title
@@ -335,14 +325,29 @@ components:
           format: int64
         title:
           type: string
+    entity.WithdrawAssetsRequest:
+      required:
+      - assets
+      - requestId
+      properties:
+        assets:
+          type: array
+          items:
+            $ref: '#/components/schemas/entity.Asset'
+        requestId:
+          type: string
     marketplaceUserInventorySyncResponse:
       type: object
-    marketplaceInventorySyncType:
-      type: string
-      default: UnknownSyncType
-      enum:
-      - UnknownSyncType
-      - Inventory
+    runtimeError:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
     marketplacev2Asset:
       type: object
       description: User inventory asset with typed attributes.
@@ -364,6 +369,54 @@ components:
         inMarket:
           type: boolean
           description: True if the asset is held on DMarket; false if still in the user's Steam inventory.
+    marketplaceGames:
+      type: string
+      default: UnknownGame
+      enum:
+      - UnknownGame
+      - CSGO
+      - Dota2
+      - TF2
+      - LifeBeyond
+      - Rust
+    typeCommonMoney:
+      type: object
+      description: Monetary amount. `amount` is a decimal string (e.g. `"1.50"`).
+      properties:
+        currency:
+          type: string
+          description: ISO 4217 currency code (e.g. `USD`).
+        amount:
+          type: string
+          description: Decimal amount as a string.
+    marketplaceUserInventorySyncRequest:
+      type: object
+      properties:
+        Type:
+          $ref: '#/components/schemas/marketplaceInventorySyncType'
+        GameID:
+          $ref: '#/components/schemas/marketplaceGames'
+    marketplaceInventorySyncType:
+      type: string
+      default: UnknownSyncType
+      enum:
+      - UnknownSyncType
+      - Inventory
+    entity.WithdrawResponse:
+      required:
+      - transferId
+      properties:
+        transferId:
+          type: string
+    rest.ErrorRepresentation:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
     entity.Asset:
       required:
       - classId
@@ -376,26 +429,6 @@ components:
           type: string
         id:
           type: string
-    runtimeError:
-      type: object
-      properties:
-        error:
-          type: string
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-    typeCommonMoney:
-      type: object
-      description: Monetary amount. `amount` is a decimal string (e.g. `"1.50"`).
-      properties:
-        currency:
-          type: string
-          description: ISO 4217 currency code (e.g. `USD`).
-        amount:
-          type: string
-          description: Decimal amount as a string.
     entity.ListFeeResponse:
       required:
       - defaultFee
@@ -407,33 +440,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/entity.ListPersonalFee'
-    entity.WithdrawResponse:
-      required:
-      - transferId
-      properties:
-        transferId:
-          type: string
-    entity.ListDefaultFee:
-      required:
-      - minAmount
-      - fraction
-      properties:
-        fraction:
-          type: string
-        minAmount:
-          type: integer
-          format: int64
-    entity.WithdrawAssetsRequest:
-      required:
-      - assets
-      - requestId
-      properties:
-        assets:
-          type: array
-          items:
-            $ref: '#/components/schemas/entity.Asset'
-        requestId:
-          type: string
     marketplacev2GetUserInventoryResponse:
       type: object
       properties:
@@ -449,22 +455,16 @@ components:
         cursor:
           type: string
           description: Cursor for the next page. Empty when there are no more pages.
-    rest.ErrorRepresentation:
+    entity.ListDefaultFee:
       required:
-      - code
-      - message
+      - minAmount
+      - fraction
       properties:
-        code:
+        fraction:
           type: string
-        message:
-          type: string
-    marketplaceUserInventorySyncRequest:
-      type: object
-      properties:
-        Type:
-          $ref: '#/components/schemas/marketplaceInventorySyncType'
-        GameID:
-          $ref: '#/components/schemas/marketplaceGames'
+        minAmount:
+          type: integer
+          format: int64
   securitySchemes:
     ApiKey:
       type: apiKey

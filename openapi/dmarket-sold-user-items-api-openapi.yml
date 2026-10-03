@@ -122,39 +122,6 @@ paths:
         source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"Limit\": 10,\n    \"OrderDir\": \"desc\",\n    \"Status\": \"successful\"\n}\nresult, err = client.call(\"GET\", \"/marketplace-api/v1/user-offers/closed\", payload=payload)\nprint(result)"
 components:
   schemas:
-    TradeFeeData:
-      type: object
-      properties:
-        Amount:
-          $ref: '#/components/schemas/marketplaceMoney'
-        Percent:
-          type: string
-        IsPersonal:
-          type: boolean
-          format: boolean
-    marketplaceGetUserClosedOffersResponse:
-      type: object
-      properties:
-        Trades:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplaceGetUserClosedOffersResponseTrade'
-        Total:
-          type: string
-          format: uint64
-        Cursor:
-          type: string
-          description: Cursor is a next page identifier.
-    runtimeError:
-      type: object
-      properties:
-        error:
-          type: string
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
     marketplaceTradeStatus:
       type: string
       enum:
@@ -193,6 +160,39 @@ components:
         FinalizationTime:
           type: string
           format: int64
+    runtimeError:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    marketplaceGetUserClosedOffersResponse:
+      type: object
+      properties:
+        Trades:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplaceGetUserClosedOffersResponseTrade'
+        Total:
+          type: string
+          format: uint64
+        Cursor:
+          type: string
+          description: Cursor is a next page identifier.
+    TradeFeeData:
+      type: object
+      properties:
+        Amount:
+          $ref: '#/components/schemas/marketplaceMoney'
+        Percent:
+          type: string
+        IsPersonal:
+          type: boolean
+          format: boolean
     marketplaceMoney:
       type: object
       properties:

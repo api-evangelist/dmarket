@@ -127,6 +127,19 @@ paths:
           print(result)'
 components:
   schemas:
+    api.ErrorRepresentation.validationDetails: {}
+    representation.Restriction:
+      required:
+      - expirationTime
+      - name
+      properties:
+        expirationTime:
+          type: integer
+          format: int64
+        name:
+          type: string
+          enum:
+          - P2POfferCreation
     representation.SteamAccount:
       required:
       - apiKey
@@ -156,70 +169,6 @@ components:
         steamId:
           type: string
         tradeUrl:
-          type: string
-        username:
-          type: string
-    representation.UserAccountSettingsResponse:
-      required:
-      - enabledDeviceConfirmation
-      - isSubscribedToNewsletters
-      - targetsLimit
-      - tradingApiToken
-      properties:
-        enabledDeviceConfirmation:
-          type: boolean
-        isSubscribedToNewsletters:
-          type: boolean
-        targetsLimit:
-          type: integer
-          format: int32
-        tradingApiToken:
-          type: string
-    representation.AgreementsInfo:
-      required:
-      - isConfirmed
-      - updated
-      properties:
-        isConfirmed:
-          type: boolean
-        updated:
-          type: integer
-          format: int64
-    representation.UserBalance:
-      required:
-      - dmc
-      - dmcAvailableToWithdraw
-      - usd
-      - usdAvailableToWithdraw
-      properties:
-        dmc:
-          type: string
-        dmcAvailableToWithdraw:
-          type: string
-        usd:
-          type: string
-        usdAvailableToWithdraw:
-          type: string
-    api.ErrorRepresentation:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-        validationDetails:
-          $ref: '#/components/schemas/api.ErrorRepresentation.validationDetails'
-    representation.LinkedGame:
-      required:
-      - gameId
-      - gameUserId
-      - username
-      properties:
-        gameId:
-          type: string
-        gameUserId:
           type: string
         username:
           type: string
@@ -302,30 +251,45 @@ components:
           $ref: '#/components/schemas/representation.TwitchAccount'
         username:
           type: string
-    representation.TwitchAccount:
+    api.ErrorRepresentation:
       required:
-      - icon
-      - userId
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        validationDetails:
+          $ref: '#/components/schemas/api.ErrorRepresentation.validationDetails'
+    representation.LinkedGame:
+      required:
+      - gameId
+      - gameUserId
       - username
       properties:
-        icon:
+        gameId:
           type: string
-        userId:
+        gameUserId:
           type: string
         username:
           type: string
-    representation.Restriction:
+    representation.UserAccountSettingsResponse:
       required:
-      - expirationTime
-      - name
+      - enabledDeviceConfirmation
+      - isSubscribedToNewsletters
+      - targetsLimit
+      - tradingApiToken
       properties:
-        expirationTime:
+        enabledDeviceConfirmation:
+          type: boolean
+        isSubscribedToNewsletters:
+          type: boolean
+        targetsLimit:
           type: integer
-          format: int64
-        name:
+          format: int32
+        tradingApiToken:
           type: string
-          enum:
-          - P2POfferCreation
     representation.Feat:
       required:
       - enabled
@@ -339,7 +303,43 @@ components:
           - P2P
           - P2PToggleVisible
           - P2POnboardingSeen
-    api.ErrorRepresentation.validationDetails: {}
+    representation.AgreementsInfo:
+      required:
+      - isConfirmed
+      - updated
+      properties:
+        isConfirmed:
+          type: boolean
+        updated:
+          type: integer
+          format: int64
+    representation.UserBalance:
+      required:
+      - dmc
+      - dmcAvailableToWithdraw
+      - usd
+      - usdAvailableToWithdraw
+      properties:
+        dmc:
+          type: string
+        dmcAvailableToWithdraw:
+          type: string
+        usd:
+          type: string
+        usdAvailableToWithdraw:
+          type: string
+    representation.TwitchAccount:
+      required:
+      - icon
+      - userId
+      - username
+      properties:
+        icon:
+          type: string
+        userId:
+          type: string
+        username:
+          type: string
   securitySchemes:
     ApiKey:
       type: apiKey

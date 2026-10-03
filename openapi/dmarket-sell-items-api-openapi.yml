@@ -364,16 +364,20 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    marketplacev2UpdateOfferRequest:
+    marketplacev2DeleteOfferRequest:
       type: object
       properties:
         offerId:
           type: string
           description: Offer unique identifier.
-        priceCents:
-          type: integer
-          format: int64
-          description: New price in cents.
+    marketplaceDepositAssetsRequest:
+      type: object
+      properties:
+        AssetID:
+          type: array
+          description: List of asset id to deposit.
+          items:
+            type: string
     marketplacev2CreateOfferRequest:
       type: object
       properties:
@@ -387,23 +391,31 @@ components:
           description: Price in cents.
       required:
       - assetId
-    marketplaceDepositAssetsRequest:
+    marketplacev2GetUserOffersResponse:
       type: object
       properties:
-        AssetID:
+        items:
           type: array
-          description: List of asset id to deposit.
+          description: User offers.
           items:
-            type: string
-    marketplacev2BatchDeleteOffersResponseReason:
+            $ref: '#/components/schemas/marketplacev2OfferV2'
+        total:
+          type: integer
+          format: int64
+          description: Total number of offers matching the filter criteria across all pages, independent of limit/cursor.
+        cursor:
+          type: string
+          description: Cursor for the next page. Empty when there are no more pages.
+    marketplacev2UpdateOfferRequest:
       type: object
       properties:
         offerId:
           type: string
-        code:
-          type: string
-        message:
-          type: string
+          description: Offer unique identifier.
+        priceCents:
+          type: integer
+          format: int64
+          description: New price in cents.
     marketplaceGetDepositStatusResponse:
       type: object
       properties:
@@ -429,16 +441,14 @@ components:
             $ref: '#/components/schemas/marketplaceAssetMap'
         SteamDepositInfo:
           $ref: '#/components/schemas/marketplaceSteamDepositInfo'
-    marketplaceSteamDepositInfo:
+    marketplacev2BatchDeleteOffersRequest:
       type: object
       properties:
-        TradeOfferID:
-          type: string
-          description: Steam trade offer id.
-        Message:
-          type: string
-          description: Custom trade message.
-    marketplacev2BatchDeleteOffersResponse:
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplacev2DeleteOfferRequest'
+    marketplacev2BatchUpdateOffersResponse:
       type: object
       properties:
         offers:
@@ -448,20 +458,30 @@ components:
         failed:
           type: array
           items:
-            $ref: '#/components/schemas/marketplacev2BatchDeleteOffersResponseReason'
+            $ref: '#/components/schemas/marketplacev2BatchUpdateOffersResponseReason'
+    runtimeError:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    marketplaceSteamDepositInfo:
+      type: object
+      properties:
+        TradeOfferID:
+          type: string
+          description: Steam trade offer id.
+        Message:
+          type: string
+          description: Custom trade message.
     marketplacev2BatchUpdateOffersResponseReason:
       type: object
       properties:
         offerId:
-          type: string
-        code:
-          type: string
-        message:
-          type: string
-    marketplacev2BatchCreateOffersResponseReason:
-      type: object
-      properties:
-        assetId:
           type: string
         code:
           type: string
@@ -488,6 +508,19 @@ components:
         offerId:
           type: string
           description: Offer unique identifier.
+    marketplacev2BatchCreateOffersRequest:
+      type: object
+      properties:
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplacev2CreateOfferRequest'
+    marketplaceDepositAssetsResponse:
+      type: object
+      properties:
+        DepositID:
+          type: string
+          description: Deposit operation unique identifier.
     marketplaceTransferStatus:
       type: string
       default: TransferStatusPending
@@ -498,13 +531,38 @@ components:
       - TransferStatusFailedToCreate
       - TransferStatusError
       - TransferStatusOnHold
-    marketplacev2BatchCreateOffersRequest:
+    marketplaceAssetMap:
+      type: object
+      properties:
+        InGameAssetID:
+          type: string
+          description: In-game asset identifier.
+        DmarketAssetID:
+          type: string
+          description: In-market asset identifier.
+    marketplacev2Offer:
+      type: object
+      properties:
+        id:
+          type: string
+        assetId:
+          type: string
+    marketplacev2BatchUpdateOffersRequest:
       type: object
       properties:
         requests:
           type: array
           items:
-            $ref: '#/components/schemas/marketplacev2CreateOfferRequest'
+            $ref: '#/components/schemas/marketplacev2UpdateOfferRequest'
+    marketplacev2BatchCreateOffersResponseReason:
+      type: object
+      properties:
+        assetId:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
     marketplacev2BatchCreateOffersResponse:
       type: object
       properties:
@@ -516,58 +574,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/marketplacev2BatchCreateOffersResponseReason'
-    marketplacev2DeleteOfferRequest:
+    marketplacev2BatchDeleteOffersResponseReason:
       type: object
       properties:
         offerId:
           type: string
-          description: Offer unique identifier.
-    marketplacev2Offer:
-      type: object
-      properties:
-        id:
-          type: string
-        assetId:
-          type: string
-    runtimeError:
-      type: object
-      properties:
-        error:
-          type: string
         code:
-          type: integer
-          format: int32
+          type: string
         message:
           type: string
-    marketplacev2GetUserOffersResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          description: User offers.
-          items:
-            $ref: '#/components/schemas/marketplacev2OfferV2'
-        total:
-          type: integer
-          format: int64
-          description: Total number of offers matching the filter criteria across all pages, independent of limit/cursor.
-        cursor:
-          type: string
-          description: Cursor for the next page. Empty when there are no more pages.
-    marketplacev2BatchDeleteOffersRequest:
-      type: object
-      properties:
-        requests:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2DeleteOfferRequest'
-    marketplaceDepositAssetsResponse:
-      type: object
-      properties:
-        DepositID:
-          type: string
-          description: Deposit operation unique identifier.
-    marketplacev2BatchUpdateOffersResponse:
+    marketplacev2BatchDeleteOffersResponse:
       type: object
       properties:
         offers:
@@ -577,23 +593,7 @@ components:
         failed:
           type: array
           items:
-            $ref: '#/components/schemas/marketplacev2BatchUpdateOffersResponseReason'
-    marketplaceAssetMap:
-      type: object
-      properties:
-        InGameAssetID:
-          type: string
-          description: In-game asset identifier.
-        DmarketAssetID:
-          type: string
-          description: In-market asset identifier.
-    marketplacev2BatchUpdateOffersRequest:
-      type: object
-      properties:
-        requests:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2UpdateOfferRequest'
+            $ref: '#/components/schemas/marketplacev2BatchDeleteOffersResponseReason'
   securitySchemes:
     ApiKey:
       type: apiKey
