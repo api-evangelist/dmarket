@@ -127,51 +127,35 @@ paths:
           print(result)'
 components:
   schemas:
-    api.ErrorRepresentation.validationDetails: {}
-    representation.Restriction:
+    representation.UserAccountSettingsResponse:
       required:
-      - expirationTime
+      - enabledDeviceConfirmation
+      - isSubscribedToNewsletters
+      - targetsLimit
+      - tradingApiToken
+      properties:
+        enabledDeviceConfirmation:
+          type: boolean
+        isSubscribedToNewsletters:
+          type: boolean
+        targetsLimit:
+          type: integer
+          format: int32
+        tradingApiToken:
+          type: string
+    representation.Feat:
+      required:
+      - enabled
       - name
       properties:
-        expirationTime:
-          type: integer
-          format: int64
+        enabled:
+          type: boolean
         name:
           type: string
           enum:
-          - P2POfferCreation
-    representation.SteamAccount:
-      required:
-      - apiKey
-      - apiKeyStatus
-      - icon
-      - isProfilePrivate
-      - level
-      - steamId
-      - tradeUrl
-      - username
-      properties:
-        apiKey:
-          type: string
-        apiKeyStatus:
-          type: string
-          enum:
-          - New
-          - Verified
-          - Invalid
-        icon:
-          type: string
-        isProfilePrivate:
-          type: boolean
-        level:
-          type: integer
-          format: int64
-        steamId:
-          type: string
-        tradeUrl:
-          type: string
-        username:
-          type: string
+          - P2P
+          - P2PToggleVisible
+          - P2POnboardingSeen
     representation.UserAccountResponse:
       required:
       - agreementsInfo
@@ -251,68 +235,6 @@ components:
           $ref: '#/components/schemas/representation.TwitchAccount'
         username:
           type: string
-    api.ErrorRepresentation:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-        validationDetails:
-          $ref: '#/components/schemas/api.ErrorRepresentation.validationDetails'
-    representation.LinkedGame:
-      required:
-      - gameId
-      - gameUserId
-      - username
-      properties:
-        gameId:
-          type: string
-        gameUserId:
-          type: string
-        username:
-          type: string
-    representation.UserAccountSettingsResponse:
-      required:
-      - enabledDeviceConfirmation
-      - isSubscribedToNewsletters
-      - targetsLimit
-      - tradingApiToken
-      properties:
-        enabledDeviceConfirmation:
-          type: boolean
-        isSubscribedToNewsletters:
-          type: boolean
-        targetsLimit:
-          type: integer
-          format: int32
-        tradingApiToken:
-          type: string
-    representation.Feat:
-      required:
-      - enabled
-      - name
-      properties:
-        enabled:
-          type: boolean
-        name:
-          type: string
-          enum:
-          - P2P
-          - P2PToggleVisible
-          - P2POnboardingSeen
-    representation.AgreementsInfo:
-      required:
-      - isConfirmed
-      - updated
-      properties:
-        isConfirmed:
-          type: boolean
-        updated:
-          type: integer
-          format: int64
     representation.UserBalance:
       required:
       - dmc
@@ -340,6 +262,84 @@ components:
           type: string
         username:
           type: string
+    representation.AgreementsInfo:
+      required:
+      - isConfirmed
+      - updated
+      properties:
+        isConfirmed:
+          type: boolean
+        updated:
+          type: integer
+          format: int64
+    representation.LinkedGame:
+      required:
+      - gameId
+      - gameUserId
+      - username
+      properties:
+        gameId:
+          type: string
+        gameUserId:
+          type: string
+        username:
+          type: string
+    api.ErrorRepresentation.validationDetails: {}
+    api.ErrorRepresentation:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        validationDetails:
+          $ref: '#/components/schemas/api.ErrorRepresentation.validationDetails'
+    representation.SteamAccount:
+      required:
+      - apiKey
+      - apiKeyStatus
+      - icon
+      - isProfilePrivate
+      - level
+      - steamId
+      - tradeUrl
+      - username
+      properties:
+        apiKey:
+          type: string
+        apiKeyStatus:
+          type: string
+          enum:
+          - New
+          - Verified
+          - Invalid
+        icon:
+          type: string
+        isProfilePrivate:
+          type: boolean
+        level:
+          type: integer
+          format: int64
+        steamId:
+          type: string
+        tradeUrl:
+          type: string
+        username:
+          type: string
+    representation.Restriction:
+      required:
+      - expirationTime
+      - name
+      properties:
+        expirationTime:
+          type: integer
+          format: int64
+        name:
+          type: string
+          enum:
+          - P2POfferCreation
   securitySchemes:
     ApiKey:
       type: apiKey

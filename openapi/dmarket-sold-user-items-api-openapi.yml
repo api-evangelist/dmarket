@@ -122,6 +122,16 @@ paths:
         source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"Limit\": 10,\n    \"OrderDir\": \"desc\",\n    \"Status\": \"successful\"\n}\nresult, err = client.call(\"GET\", \"/marketplace-api/v1/user-offers/closed\", payload=payload)\nprint(result)"
 components:
   schemas:
+    marketplaceMoney:
+      type: object
+      properties:
+        Currency:
+          type: string
+          description: Currency code.
+        Amount:
+          type: number
+          format: float
+          description: Money amount.
     marketplaceTradeStatus:
       type: string
       enum:
@@ -129,37 +139,6 @@ components:
       - reverted
       - trade_protected
       default: successful
-    marketplaceGetUserClosedOffersResponseTrade:
-      type: object
-      properties:
-        OfferID:
-          type: string
-        TargetID:
-          type: string
-        AssetID:
-          type: string
-        Price:
-          $ref: '#/components/schemas/marketplaceMoney'
-        CurrencyCode:
-          type: string
-        Amount:
-          type: string
-          format: uint64
-        Title:
-          type: string
-        Fee:
-          $ref: '#/components/schemas/TradeFeeData'
-        OfferCreatedAt:
-          type: string
-          format: int64
-        OfferClosedAt:
-          type: string
-          format: int64
-        Status:
-          $ref: '#/components/schemas/marketplaceTradeStatus'
-        FinalizationTime:
-          type: string
-          format: int64
     runtimeError:
       type: object
       properties:
@@ -193,16 +172,37 @@ components:
         IsPersonal:
           type: boolean
           format: boolean
-    marketplaceMoney:
+    marketplaceGetUserClosedOffersResponseTrade:
       type: object
       properties:
-        Currency:
+        OfferID:
           type: string
-          description: Currency code.
+        TargetID:
+          type: string
+        AssetID:
+          type: string
+        Price:
+          $ref: '#/components/schemas/marketplaceMoney'
+        CurrencyCode:
+          type: string
         Amount:
-          type: number
-          format: float
-          description: Money amount.
+          type: string
+          format: uint64
+        Title:
+          type: string
+        Fee:
+          $ref: '#/components/schemas/TradeFeeData'
+        OfferCreatedAt:
+          type: string
+          format: int64
+        OfferClosedAt:
+          type: string
+          format: int64
+        Status:
+          $ref: '#/components/schemas/marketplaceTradeStatus'
+        FinalizationTime:
+          type: string
+          format: int64
   securitySchemes:
     ApiKey:
       type: apiKey

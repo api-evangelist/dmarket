@@ -364,33 +364,13 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    marketplacev2DeleteOfferRequest:
+    marketplacev2BatchDeleteOffersRequest:
       type: object
       properties:
-        offerId:
-          type: string
-          description: Offer unique identifier.
-    marketplaceDepositAssetsRequest:
-      type: object
-      properties:
-        AssetID:
+        requests:
           type: array
-          description: List of asset id to deposit.
           items:
-            type: string
-    marketplacev2CreateOfferRequest:
-      type: object
-      properties:
-        assetId:
-          type: string
-          format: uuid
-          description: Asset unique identifier.
-        priceCents:
-          type: integer
-          format: int64
-          description: Price in cents.
-      required:
-      - assetId
+            $ref: '#/components/schemas/marketplacev2DeleteOfferRequest'
     marketplacev2GetUserOffersResponse:
       type: object
       properties:
@@ -406,6 +386,40 @@ components:
         cursor:
           type: string
           description: Cursor for the next page. Empty when there are no more pages.
+    marketplaceDepositAssetsResponse:
+      type: object
+      properties:
+        DepositID:
+          type: string
+          description: Deposit operation unique identifier.
+    marketplacev2BatchDeleteOffersResponseReason:
+      type: object
+      properties:
+        offerId:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
+    marketplaceAssetMap:
+      type: object
+      properties:
+        InGameAssetID:
+          type: string
+          description: In-game asset identifier.
+        DmarketAssetID:
+          type: string
+          description: In-market asset identifier.
+    marketplaceTransferStatus:
+      type: string
+      default: TransferStatusPending
+      enum:
+      - TransferStatusPending
+      - TransferStatusCreated
+      - TransferStatusSuccess
+      - TransferStatusFailedToCreate
+      - TransferStatusError
+      - TransferStatusOnHold
     marketplacev2UpdateOfferRequest:
       type: object
       properties:
@@ -416,6 +430,39 @@ components:
           type: integer
           format: int64
           description: New price in cents.
+    marketplacev2BatchUpdateOffersResponseReason:
+      type: object
+      properties:
+        offerId:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
+    marketplaceSteamDepositInfo:
+      type: object
+      properties:
+        TradeOfferID:
+          type: string
+          description: Steam trade offer id.
+        Message:
+          type: string
+          description: Custom trade message.
+    marketplacev2BatchCreateOffersRequest:
+      type: object
+      properties:
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplacev2CreateOfferRequest'
+    marketplaceDepositAssetsRequest:
+      type: object
+      properties:
+        AssetID:
+          type: array
+          description: List of asset id to deposit.
+          items:
+            type: string
     marketplaceGetDepositStatusResponse:
       type: object
       properties:
@@ -441,13 +488,23 @@ components:
             $ref: '#/components/schemas/marketplaceAssetMap'
         SteamDepositInfo:
           $ref: '#/components/schemas/marketplaceSteamDepositInfo'
-    marketplacev2BatchDeleteOffersRequest:
+    runtimeError:
       type: object
       properties:
-        requests:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2DeleteOfferRequest'
+        error:
+          type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    marketplacev2Offer:
+      type: object
+      properties:
+        id:
+          type: string
+        assetId:
+          type: string
     marketplacev2BatchUpdateOffersResponse:
       type: object
       properties:
@@ -459,34 +516,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/marketplacev2BatchUpdateOffersResponseReason'
-    runtimeError:
-      type: object
-      properties:
-        error:
-          type: string
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-    marketplaceSteamDepositInfo:
-      type: object
-      properties:
-        TradeOfferID:
-          type: string
-          description: Steam trade offer id.
-        Message:
-          type: string
-          description: Custom trade message.
-    marketplacev2BatchUpdateOffersResponseReason:
+    marketplacev2DeleteOfferRequest:
       type: object
       properties:
         offerId:
           type: string
-        code:
+          description: Offer unique identifier.
+    marketplacev2CreateOfferRequest:
+      type: object
+      properties:
+        assetId:
           type: string
-        message:
-          type: string
+          format: uuid
+          description: Asset unique identifier.
+        priceCents:
+          type: integer
+          format: int64
+          description: Price in cents.
+      required:
+      - assetId
     marketplacev2OfferV2:
       type: object
       description: Marketplace offer with typed attributes.
@@ -508,45 +556,6 @@ components:
         offerId:
           type: string
           description: Offer unique identifier.
-    marketplacev2BatchCreateOffersRequest:
-      type: object
-      properties:
-        requests:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2CreateOfferRequest'
-    marketplaceDepositAssetsResponse:
-      type: object
-      properties:
-        DepositID:
-          type: string
-          description: Deposit operation unique identifier.
-    marketplaceTransferStatus:
-      type: string
-      default: TransferStatusPending
-      enum:
-      - TransferStatusPending
-      - TransferStatusCreated
-      - TransferStatusSuccess
-      - TransferStatusFailedToCreate
-      - TransferStatusError
-      - TransferStatusOnHold
-    marketplaceAssetMap:
-      type: object
-      properties:
-        InGameAssetID:
-          type: string
-          description: In-game asset identifier.
-        DmarketAssetID:
-          type: string
-          description: In-market asset identifier.
-    marketplacev2Offer:
-      type: object
-      properties:
-        id:
-          type: string
-        assetId:
-          type: string
     marketplacev2BatchUpdateOffersRequest:
       type: object
       properties:
@@ -563,26 +572,6 @@ components:
           type: string
         message:
           type: string
-    marketplacev2BatchCreateOffersResponse:
-      type: object
-      properties:
-        offers:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2Offer'
-        failed:
-          type: array
-          items:
-            $ref: '#/components/schemas/marketplacev2BatchCreateOffersResponseReason'
-    marketplacev2BatchDeleteOffersResponseReason:
-      type: object
-      properties:
-        offerId:
-          type: string
-        code:
-          type: string
-        message:
-          type: string
     marketplacev2BatchDeleteOffersResponse:
       type: object
       properties:
@@ -594,6 +583,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/marketplacev2BatchDeleteOffersResponseReason'
+    marketplacev2BatchCreateOffersResponse:
+      type: object
+      properties:
+        offers:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplacev2Offer'
+        failed:
+          type: array
+          items:
+            $ref: '#/components/schemas/marketplacev2BatchCreateOffersResponseReason'
   securitySchemes:
     ApiKey:
       type: apiKey

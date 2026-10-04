@@ -87,22 +87,6 @@ paths:
         source: "# Full signing client: https://github.com/dmarket/dm-trading-tools\nfrom dmarket_client import DMarketClient\n\nclient = DMarketClient(public_key=\"<public hex>\", secret_key=\"<secret hex>\")\npayload = {\n    \"gameId\": \"a8db\",\n    \"title\": \"AK-47 | Redline (Field-Tested)\",\n    \"limit\": 20\n}\nresult, err = client.call(\"GET\", \"/trade-aggregator/v1/last-sales\", payload=payload)\nprint(result)"
 components:
   schemas:
-    tradeGetLastSalesResponse:
-      type: object
-      properties:
-        sales:
-          type: array
-          items:
-            $ref: '#/components/schemas/GetLastSalesResponseSale'
-    rest.ErrorRepresentation:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-        message:
-          type: string
     GetLastSalesResponseSale:
       type: object
       properties:
@@ -121,6 +105,22 @@ components:
           type: object
         orderAttributes:
           type: object
+    tradeGetLastSalesResponse:
+      type: object
+      properties:
+        sales:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetLastSalesResponseSale'
+    rest.ErrorRepresentation:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
   securitySchemes:
     ApiKey:
       type: apiKey
