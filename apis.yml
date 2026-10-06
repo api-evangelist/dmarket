@@ -42,7 +42,7 @@ accessModel:
 image: https://dmarket.com/apple-touch-icon.png
 specificationVersion: '0.23'
 created: '2026-07-17'
-modified: '2026-07-18'
+modified: '2026-10-06'
 tags:
 - Company
 - Crypto
@@ -217,6 +217,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- url: https://dmarket.com/blog/index.xml
+  type: BlogRSS
 - type: Overlay
   url: overlays/dmarket-trading-overlay.yaml
 - type: DomainSecurity
