@@ -64,6 +64,122 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-DMarket is a company surfaced as a portfolio company of pantera-capital and added to the API Evangelist network as a stub for enrichment. Sector: crypto. This profile is a lead awaiting the enrichment pipeline.
+DMarket is a marketplace for trading in-game items and skins across titles like CS2 (CS:GO), Dota 2, Team Fortress 2, and Rust. It offers a public JSON-based Trading API that lets developers programmatically manage their DMarket inventory: read account balance, sync and deposit items from linked game inventories, create and manage sell offers, place standing buy orders (targets), buy and withdraw assets, read aggregated market prices, and pull sales history. Requests authenticate with a public API key plus a per-request Ed25519 signature. DMarket was surfaced as a portfolio company of Pantera Capital. Sector: crypto / gaming.
 
-Backed by: pantera-capital — https://dmarket.com/ingame-items/item-list/csgo-skins
+**Areas:** Company · Cryptocurrency · Gaming · Marketplace · Trading · Skins · In-Game Items · Blockchain
+
+## DMarket on APIs.io
+
+Everything profiled for DMarket is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/dmarket/](https://apis.io/providers/dmarket/)** — or go straight to one of the APIs or properties below.
+
+### APIs (6)
+
+- [DMarket Account API](https://apis.io/apis/dmarket/dmarket-account-api/) — User profile and balance.
+- [DMarket Aggregator API](https://apis.io/apis/dmarket/dmarket-aggregator-api/) — Aggregated market price data.
+- [DMarket Buy items API](https://apis.io/apis/dmarket/dmarket-buy-items-api/) — Browse marketplace offers and buy orders (targets), and purchase items.
+- [DMarket Inventory/items API](https://apis.io/apis/dmarket/dmarket-inventory-items-api/) — User inventory, deposits and withdrawals.
+- [DMarket Sell Items API](https://apis.io/apis/dmarket/dmarket-sell-items-api/) — Create, edit, delete and list your sell offers.
+- [DMarket Sold user items API](https://apis.io/apis/dmarket/dmarket-sold-user-items-api/) — History of your completed sales.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [dmarket](https://apis.io/servers/dmarket/dmarket/)
+
+#### Collections (6)
+
+Postman and Open Collection request collections.
+
+- [DMarket trading Account API](https://apis.io/collections/dmarket/open-dmarket-account-api/)
+- [DMarket trading Account Aggregator API](https://apis.io/collections/dmarket/open-dmarket-aggregator-api/)
+- [DMarket trading Account Buy items API](https://apis.io/collections/dmarket/open-dmarket-buy-items-api/)
+- [DMarket trading Account Inventory/items API](https://apis.io/collections/dmarket/open-dmarket-inventory-items-api/)
+- [DMarket trading Account Sell Items API](https://apis.io/collections/dmarket/open-dmarket-sell-items-api/)
+- [DMarket trading Account Sold user items API](https://apis.io/collections/dmarket/open-dmarket-sold-user-items-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Dmarket Trading Overlay](https://apis.io/overlays/dmarket/dmarket-trading-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Dmarket Authentication](https://apis.io/security/dmarket/dmarket-authentication/)
+- [Dmarket Domain Security](https://apis.io/security/dmarket/dmarket-domain-security/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://dmarket.com/ingame-items/item-list/csgo-skins)
+- [Documentation](https://docs.dmarket.com/v1/swagger.html)
+- [Getting started](https://dmarket.com/faq#tradingAPI)
+- [API reference](https://docs.dmarket.com/v1/swagger.html)
+- [Pricing](https://dmarket.com/pricing)
+- [Sign up](https://dmarket.com/sign-in)
+- [Support](https://dmarket.com/faq)
+- [Blog](https://dmarket.com/blog)
+- [Terms of service](https://dmarket.com/terms-of-use)
+- [Privacy policy](https://dmarket.com/privacy-policy)
+- [GitHub](https://github.com/dmarket)
+
+## API Evangelist rating
+
+**Kin Score 35.4** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 48.0 |
+| Contract governance | 4.5 |
+| Operational transparency | 2.6 |
+| Developer ergonomics | 56.5 |
+| Access clarity | 21.1 |
+
+**Agent readiness 24.6** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 23.1** — Securities & Market Data
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/dmarket/](https://apis.io/providers/dmarket/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for DMarket: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/dmarket/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
